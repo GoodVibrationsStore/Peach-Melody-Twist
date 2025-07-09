@@ -1,0 +1,337 @@
+/**
+ * Enhanced Variant Picker CSS
+ * Following Shopify Theme Development Instructions
+ * Mobile-first responsive design with accessibility focus
+ */
+
+/* CSS Custom Properties for theming */
+:root {
+  --variant-picker-border-color: #d1d5db;
+  --variant-picker-border-radius: 0.375rem;
+  --variant-picker-focus-color: #2563eb;
+  --variant-picker-error-color: #dc2626;
+  --variant-picker-success-color: #059669;
+  --variant-picker-text-color: #374151;
+  --variant-picker-bg-color: #ffffff;
+  --variant-picker-disabled-bg: #f9fafb;
+  --variant-picker-disabled-text: #9ca3af;
+  --variant-picker-spacing: 1rem;
+  --variant-picker-font-size: 1rem;
+  --variant-picker-line-height: 1.5;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --variant-picker-border-color: #4b5563;
+    --variant-picker-text-color: #f9fafb;
+    --variant-picker-bg-color: #1f2937;
+    --variant-picker-disabled-bg: #374151;
+    --variant-picker-disabled-text: #6b7280;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --variant-picker-border-color: #000000;
+    --variant-picker-focus-color: #0000ff;
+    --variant-picker-error-color: #ff0000;
+    --variant-picker-success-color: #008000;
+  }
+}
+
+/* Base variant selector styles */
+.variant-selector {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--variant-picker-spacing);
+}
+
+.variant-selector--dropdown {
+  /* Specific styles for dropdown variant */
+}
+
+/* Product form input styles */
+.product-form__input--variant-picker {
+  margin-bottom: var(--variant-picker-spacing);
+}
+
+.product-form__input--dropdown {
+  position: relative;
+  margin-bottom: calc(var(--variant-picker-spacing) * 0.75);
+}
+
+/* Form labels with enhanced accessibility */
+.form__label {
+  display: block;
+  font-size: var(--variant-picker-font-size);
+  font-weight: 500;
+  color: var(--variant-picker-text-color);
+  margin-bottom: 0.5rem;
+  line-height: var(--variant-picker-line-height);
+}
+
+.form__label:focus-within {
+  color: var(--variant-picker-focus-color);
+}
+
+/* Select container with enhanced styling */
+.select {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.select__select {
+  appearance: none;
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  border: 2px solid var(--variant-picker-border-color);
+  border-radius: var(--variant-picker-border-radius);
+  background-color: var(--variant-picker-bg-color);
+  color: var(--variant-picker-text-color);
+  font-size: var(--variant-picker-font-size);
+  line-height: var(--variant-picker-line-height);
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Enhanced focus states for accessibility */
+.select__select:focus {
+  outline: none;
+  border-color: var(--variant-picker-focus-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.select__select:focus-visible {
+  outline: 2px solid var(--variant-picker-focus-color);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.select__select:disabled {
+  background-color: var(--variant-picker-disabled-bg);
+  color: var(--variant-picker-disabled-text);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Select dropdown icon */
+.select .icon-caret {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--variant-picker-text-color);
+  pointer-events: none;
+  transition: transform 0.15s ease-in-out;
+}
+
+.select__select:focus + .icon-caret {
+  color: var(--variant-picker-focus-color);
+}
+
+.select__select[aria-expanded="true"] + .icon-caret {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Option styling for unavailable variants */
+.select__select option:disabled {
+  color: var(--variant-picker-disabled-text);
+  font-style: italic;
+}
+
+.select__select option[data-sold-out="true"] {
+  color: var(--variant-picker-error-color);
+}
+
+/* Variant availability display */
+.variant-selector__availability {
+  margin-top: 0.5rem;
+}
+
+.variant-selector__availability-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.variant-selector__availability-text--available {
+  color: var(--variant-picker-success-color);
+}
+
+.variant-selector__availability-text--unavailable {
+  color: var(--variant-picker-error-color);
+}
+
+/* Error message styling */
+.form__message {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.form__message--error {
+  color: var(--variant-picker-error-color);
+}
+
+.form__message--error[hidden] {
+  display: none;
+}
+
+/* Variant picker error display */
+.variant-selector__error {
+  display: none;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--variant-picker-border-radius);
+  color: var(--variant-picker-error-color);
+  font-size: 0.875rem;
+}
+
+/* Loading state */
+.variant-selector[data-loading="true"] .select__select {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Mobile-first responsive design */
+@media (min-width: 640px) {
+  .variant-selector {
+    /* Tablet styles */
+  }
+  
+  .product-form__input--dropdown {
+    margin-bottom: var(--variant-picker-spacing);
+  }
+}
+
+@media (min-width: 768px) {
+  .variant-selector {
+    /* Desktop styles */
+  }
+}
+
+@media (min-width: 1024px) {
+  .variant-selector {
+    /* Large desktop styles */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .select__select,
+  .icon-caret {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .variant-selector {
+    break-inside: avoid;
+  }
+  
+  .select__select {
+    border: 1px solid #000;
+    background: white;
+  }
+}
+
+/* Screen reader only content */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus management for skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--variant-picker-focus-color);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced hover states for better UX */
+.select__select:hover:not(:disabled) {
+  border-color: var(--variant-picker-focus-color);
+}
+
+/* Animation for availability changes */
+.variant-selector__availability-text {
+  transition: color 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for select options (webkit) */
+.select__select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.select__select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.select__select::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.select__select::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* RTL support */
+[dir="rtl"] .select .icon-caret {
+  right: auto;
+  left: 0.75rem;
+}
+
+[dir="rtl"] .select__select {
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+}
+
+/* Component state classes */
+.variant-selector--error .select__select {
+  border-color: var(--variant-picker-error-color);
+}
+
+.variant-selector--success .select__select {
+  border-color: var(--variant-picker-success-color);
+}
+
+.variant-selector--loading .select__select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z' opacity='.25'/%3E%3Cpath fill='%23666' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Form validation styling */
+.variant-selector[data-valid="false"] .select__select {
+  border-color: var(--variant-picker-error-color);
+}
+
+.variant-selector[data-valid="true"] .select__select {
+  border-color: var(--variant-picker-success-color);
+}

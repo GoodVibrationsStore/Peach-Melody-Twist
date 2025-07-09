@@ -1,0 +1,42 @@
+# Shopify Theme Ignore File
+
+# Development files
+*.md
+*.txt
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if any)
+node_modules/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Theme development tools
+gulpfile.js
+webpack.config.js
+package.json
+package-lock.json
+
+# Documentation
+docs/
+README.md
+
+# Testing files
+tests/
+*.test.js
+
+# Temporary files
+tmp/
+temp/
+.tmp/

@@ -1,0 +1,404 @@
+{%- comment -%} 
+    Enhanced Product Variant Picker Snippet
+    Following Shopify theme development instructions
+    Dropdown-only implementation with accessibility and error handling 
+{%- endcomment -%}
+
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id | append: product.id
+  assign current_variant = product.selected_or_first_available_variant
+  assign variant_picker_id = 'variant-picker-' | append: section.id | append: product.id
+-%}
+
+{%- comment -%} Validate product has variants {%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <variant-picker-dropdown
+    class="variant-picker no-js-hidden"
+    data-section="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-theme-component="variant-picker"
+    data-url="{{ product.url }}"
+    id="{{ variant_picker_id }}"
+    role="group"
+    aria-label="{{ 'products.product.product_variants' | t | default: 'Product variants' }}">
+
+    {%- comment -%} Loading indicator for better UX {%- endcomment -%}
+    <div class="variant-picker__loading" data-loading-indicator>
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <span class="visually-hidden">{{ 'products.product.updating_variants' | t | default: 'Loading variants...' }}</span>
+    </div>
+
+    {%- comment -%} Error display container {%- endcomment -%}
+    <div
+      class="variant-picker__error visually-hidden"
+      data-error-display
+      role="alert"
+      aria-live="assertive">
+      <span class="error-icon" aria-hidden="true">⚠</span>
+      <span class="error-text"></span>
+    </div>
+
+    {%- comment -%} Enhanced product variant data for JavaScript {%- endcomment -%}
+    <script data-variant-data type="application/json">
+      {
+        "id": {{ product.id | json }},
+        "title": {{ product.title | json }},
+        "handle": {{ product.handle | json }},
+        "url": {{ product.url | within: collection | json }},
+        "moneyFormat": {{ shop.money_format | json }},
+        "currencyCode": {{ cart.currency.iso_code | json }},
+        "selectedVariant": {% if current_variant %} {{ current_variant | json }} {% else %}null{% endif %},
+      "options": [
+      {%- for option in product.options_with_values -%}
+          {
+            "name": {{ option.name | json }},
+            "position": {{ option.position | json }},
+            "values": [{%- for value in option.values -%}{{ value | json }}{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}]
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    "variants": [{%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id | json }},
+          "title": {{ variant.title | json }},
+          "available": {{ variant.available | json }},
+          "price": {{ variant.price | json }},
+          "compare_at_price": {% if variant.compare_at_price %} {{ variant.compare_at_price | json }} {% else %}null{% endif %},
+        "sku": {{ variant.sku | json }},
+        "barcode": {{ variant.barcode | json }},
+        "weight": {{ variant.weight | json }},
+        "weight_unit": {{ variant.weight_unit | json }},
+        "inventory_quantity": {% if variant.inventory_management %} {{ variant.inventory_quantity | json }} {% else %}null{% endif %},
+      "inventory_management": {{ variant.inventory_management | json }},
+      "inventory_policy": {{ variant.inventory_policy | json }},
+      "options": [{%- for option in variant.options -%}{{ option | json }}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}],
+    "featured_image": {% if variant.featured_image %}
+    {
+      "id": {{ variant.featured_image.id | json }},
+      "alt": {{ variant.featured_image.alt | json }},
+      "src": {{ variant.featured_image | image_url: width: 800 | json }},
+      "url": {{ variant.featured_image | image_url: width: 800 | json }},
+      "width": {{ variant.featured_image.width | json }},
+      "height": {{ variant.featured_image.height | json }}
+    }
+  {% else %}
+    null{% endif %}
+}{% unless forloop.last %},{% endunless %}{%- endfor -%}],"settings": {"enableImages": {{ settings.enable_variant_images | default: true | json }},"enablePricing": {{ settings.enable_dynamic_pricing | default: true | json }},"showAvailability": {{ settings.show_variant_availability | default: true | json }},"updateUrl": {{ settings.update_url_on_variant_change | default: true | json }},"showInventory": {{ settings.show_inventory_quantity | default: false | json }},"lowStockThreshold": {{ settings.low_stock_threshold | default: 10 | json }},"selectionBehavior": {{ settings.variant_selection_behavior | default: 'auto_select_first' | json }}}}
+    </script>
+
+    {%- comment -%} Hidden input for form submission {%- endcomment -%}
+    <input
+      type="hidden"
+      name="id"
+      data-variant-id-input
+      value="{{ current_variant.id | default: '' }}"
+      form="{{ product_form_id }}"
+      {% unless current_variant %}
+      disabled{% endunless %}>
+
+    {%- comment -%} Fallback for no-JS users {%- endcomment -%}
+    <noscript>
+      <div class="product-form__input product-form__input--dropdown">
+        <label class="form__label" for="Variants-{{ section.id }}">
+          {{ 'products.product.product_variants' | t | default: 'Variants' }}
+        </label>
+        <div class="select">
+          <select
+            name="id"
+            id="Variants-{{ section.id }}"
+            class="select__select"
+            form="{{ product_form_id }}">
+            {%- for variant in product.variants -%}
+              <option
+                value="{{ variant.id }}"
+                {% if variant == current_variant %}
+                selected="selected"
+                {% endif %}
+                {% unless variant.available %}
+                disabled{% endunless %}>
+                {{ variant.title }}
+                {%- if variant.available == false %}
+                  - {{ 'products.product.sold_out' | t | default: 'Sold out' }}{% endif %}
+                - {{ variant.price | money }}
+              </option>
+            {%- endfor -%}
+          </select>
+          {% render 'icon-caret' %}
+        </div>
+      </div>
+    </noscript>
+
+  </variant-picker-dropdown>
+
+  {%- comment -%} Additional product information displays {%- endcomment -%}
+  <div class="product__variant-info">
+    {%- comment -%} Variant availability display {%- endcomment -%}
+    <div class="variant-availability" data-variant-availability>
+      {%- if current_variant -%}
+        {%- if current_variant.available -%}
+          <span class="variant-availability--available">
+            {{ 'products.product.available' | t | default: 'Available' }}
+          </span>
+        {%- else -%}
+          <span class="variant-availability--sold-out">
+            {{ 'products.product.sold_out' | t | default: 'Sold out' }}
+          </span>
+        {%- endif -%}
+      {%- else -%}
+        <span class="variant-availability--select">
+          {{ 'products.product.select_options' | t | default: 'Select options' }}
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Dynamic price display {%- endcomment -%}
+    {%- if settings.enable_dynamic_pricing -%}
+      <div class="price variant-price" data-variant-price>
+        {%- if current_variant -%}
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span class="price--on-sale">{{ current_variant.price | money }}</span>
+            <span class="price--compare">{{ current_variant.compare_at_price | money }}</span>
+          {%- else -%}
+            <span class="price--regular">{{ current_variant.price | money }}</span>
+          {%- endif -%}
+        {%- else -%}
+          <span class="price--placeholder">
+            {{ 'products.product.from_lowest_price_html' | t: lowest_price: product.price_min | money | default: 'From' }}
+          </span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Inventory quantity display {%- endcomment -%}
+    {%- if settings.show_inventory_quantity and current_variant.inventory_management -%}
+      <div class="variant-inventory" data-variant-inventory>
+        {%- assign inventory_quantity = current_variant.inventory_quantity -%}
+        {%- assign low_stock_threshold = settings.low_stock_threshold | default: 10 -%}
+
+        {%- if inventory_quantity > 0 -%}
+          {%- if inventory_quantity <= low_stock_threshold -%}
+            <span class="inventory--low">
+              {{ 'products.product.last_in_stock' | t: count: inventory_quantity | default: 'Only [count] left!' | replace: '[count]', inventory_quantity }}
+            </span>
+          {%- else -%}
+            <span class="inventory--available">
+              {{ 'products.product.stock_available' | t: count: inventory_quantity | default: '[count] available' | replace: '[count]', inventory_quantity }}
+            </span>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} SKU display {%- endcomment -%}
+    {%- if current_variant.sku != blank -%}
+      <div class="variant-sku" data-variant-sku>
+        <span class="sku-label">{{ 'products.product.sku' | t | default: 'SKU' }}:</span>
+        <span class="sku-value">{{ current_variant.sku }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+
+{%- else -%}
+  {%- comment -%} Single variant product - just include hidden input {%- endcomment -%}
+  <input
+    type="hidden"
+    name="id"
+    value="{{ product.variants.first.id }}"
+    form="{{ product_form_id }}">
+
+  {%- comment -%} Show price for single variant {%- endcomment -%}
+  <div class="price variant-price">
+    {%- assign single_variant = product.variants.first -%}
+    {%- if single_variant.compare_at_price > single_variant.price -%}
+      <span class="price--on-sale">{{ single_variant.price | money }}</span>
+      <span class="price--compare">{{ single_variant.compare_at_price | money }}</span>
+    {%- else -%}
+      <span class="price--regular">{{ single_variant.price | money }}</span>
+    {%- endif -%}
+  </div>
+{%- endunless -%}
+
+{%- comment -%} Enhanced accessibility announcements {%- endcomment -%}
+<div
+  id="variant-picker-announcements-{{ product.id }}"
+  class="visually-hidden"
+  aria-live="polite"
+  aria-atomic="true">
+  {%- comment -%} Populated dynamically by JavaScript {%- endcomment -%}
+</div>
+
+{%- comment -%} Schema.org structured data for variants {%- endcomment -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncate: 160 | json }},
+    "sku": {{ product.variants.first.sku | json }},
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          "name": {{ variant.title | json }},
+          "price": "{{ variant.price | divided_by: 100.0 }}",
+          "priceCurrency": "{{ cart.currency.iso_code }}",
+          "sku": {{ variant.sku | json }},
+          "availability": {% if variant.available %} "https://schema.org/InStock"{% else %}"https://schema.org/OutOfStock"{% endif %},
+          "url": "{{ shop.url }} {{ product.url }} ?variant={{ variant.id }}"
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{%- style -%}
+  .variant-picker {
+    margin: 1.5rem 0;
+  }
+
+  .variant-picker__loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .variant-picker--loading .variant-picker__loading {
+    opacity: 1;
+  }
+
+  .loading-spinner {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .variant-picker__error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.375rem;
+    color: #dc2626;
+    font-size: 1.4rem;
+    margin: 1rem 0;
+  }
+
+  .variant-picker__error.visually-hidden {
+    display: none;
+  }
+
+  .product__variant-info {
+    margin-top: 1.5rem;
+  }
+
+  .variant-availability {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .variant-availability::before {
+    content: '';
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    background-color: currentColor;
+  }
+
+  .variant-availability--available {
+    color: #059669;
+  }
+
+  .variant-availability--sold-out {
+    color: #dc2626;
+  }
+
+  .variant-availability--select {
+    color: #6b7280;
+  }
+
+  .variant-inventory {
+    font-size: 1.3rem;
+    margin: 0.5rem 0;
+  }
+
+  .inventory--low {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  .inventory--available {
+    color: #059669;
+  }
+
+  .variant-sku {
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin: 0.5rem 0;
+  }
+
+  .sku-label {
+    font-weight: 500;
+  }
+
+  /* Focus and interaction states */
+  .variant-picker:focus-within {
+    outline: 2px solid var(--variant-picker-focus-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .variant-picker__error {
+      border-width: 2px;
+    }
+
+    .variant-availability::before {
+      border: 1px solid currentColor;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+      animation: none;
+    }
+
+    .variant-picker__loading {
+      transition: none;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .variant-picker__loading,
+    .variant-picker__error {
+      display: none !important;
+    }
+  }{%- endstyle -%}
+
+<!-- Add this in the <head> section -->
+{{ 'variant-selector.css' | asset_url | stylesheet_tag }}
+
+<!-- Add this before closing </body> tag -->
+{{ 'variant-picker-dropdown.js' | asset_url | script_tag }}

@@ -1,0 +1,1718 @@
+/* Enhanced Base CSS for Shopify Theme with Variant Picker Support */
+
+/* CSS Custom Properties for Theme Consistency */
+:root {
+  --color-base-text: 18, 18, 18;
+  --color-base-background-1: 255, 255, 255;
+  --color-base-background-2: 243, 243, 243;
+  --color-base-solid-button-labels: 255, 255, 255;
+  --color-base-outline-button-labels: 18, 18, 18;
+  --color-base-accent-1: 18, 18, 18;
+  --color-base-accent-2: 334, 334, 334;
+  --gradient-base-background-1: #ffffff;
+  --gradient-base-background-2: #f3f3f3;
+  --gradient-base-accent-1: #121212;
+  --gradient-base-accent-2: #dedede;
+
+  --font-body-family: Assistant, sans-serif;
+  --font-body-style: normal;
+  --font-body-weight: 400;
+  --font-body-weight-bold: 700;
+
+  --font-heading-family: Assistant, sans-serif;
+  --font-heading-style: normal;
+  --font-heading-weight: 400;
+
+  --font-body-scale: 1;
+  --font-heading-scale: 1.2;
+
+  --color-schemes-count: 3;
+
+  --page-width: 120rem;
+  --page-width-margin: 0 2rem;
+
+  --duration-short: 100ms;
+  --duration-default: 200ms;
+  --duration-long: 500ms;
+
+  --spacing-sections-desktop: 0;
+  --spacing-sections-mobile: 0;
+
+  --grid-desktop-vertical-spacing: 3rem;
+  --grid-desktop-horizontal-spacing: 3rem;
+  --grid-mobile-vertical-spacing: 1rem;
+  --grid-mobile-horizontal-spacing: 1rem;
+
+  --text-boxes-border-opacity: 0.1;
+  --text-boxes-border-width: 0;
+  --text-boxes-radius: 0;
+  --text-boxes-shadow-opacity: 0;
+  --text-boxes-shadow-visible: 0;
+  --text-boxes-shadow-horizontal-offset: 0;
+  --text-boxes-shadow-vertical-offset: 4px;
+  --text-boxes-shadow-blur-radius: 5px;
+
+  --buttons-radius: 0;
+  --buttons-radius-outset: 0;
+  --buttons-border-width: 1px;
+  --buttons-border-opacity: 1;
+  --buttons-shadow-opacity: 0;
+  --buttons-shadow-visible: 0;
+  --buttons-shadow-horizontal-offset: 0;
+  --buttons-shadow-vertical-offset: 4px;
+  --buttons-shadow-blur-radius: 5px;
+  --buttons-border-offset: 0;
+
+  --inputs-radius: 0;
+  --inputs-border-width: 1px;
+  --inputs-border-opacity: 0.55;
+  --inputs-shadow-opacity: 0;
+  --inputs-shadow-horizontal-offset: 0;
+  --inputs-margin-offset: 0;
+  --inputs-shadow-vertical-offset: 4px;
+  --inputs-shadow-blur-radius: 5px;
+  --inputs-radius-outset: 0;
+
+  --variant-pills-radius: 4rem;
+  --variant-pills-border-width: 1px;
+  --variant-pills-border-opacity: 0.55;
+  --variant-pills-shadow-opacity: 0;
+  --variant-pills-shadow-horizontal-offset: 0;
+  --variant-pills-shadow-vertical-offset: 4px;
+  --variant-pills-shadow-blur-radius: 5px;
+
+  --media-radius: 0;
+  --media-border-opacity: 0.05;
+  --media-border-width: 1px;
+  --media-shadow-opacity: 0;
+  --media-shadow-horizontal-offset: 0;
+  --media-shadow-vertical-offset: 4px;
+  --media-shadow-blur-radius: 5px;
+
+  --popup-border-width: 1px;
+  --popup-border-opacity: 0.1;
+  --popup-corner-radius: 0;
+  --popup-shadow-opacity: 0.05;
+  --popup-shadow-horizontal-offset: 0;
+  --popup-shadow-vertical-offset: 4px;
+  --popup-shadow-blur-radius: 5px;
+
+  --drawer-border-width: 1px;
+  --drawer-border-opacity: 0.1;
+  --drawer-shadow-opacity: 0;
+  --drawer-shadow-horizontal-offset: 0;
+  --drawer-shadow-vertical-offset: 4px;
+  --drawer-shadow-blur-radius: 5px;
+
+  --badge-corner-radius: 4rem;
+
+  --card-outline-opacity: 0.04;
+  --card-outline-width: 1px;
+  --card-border-width: 0;
+  --card-border-opacity: 0.1;
+  --card-corner-radius: 0;
+  --card-shadow-opacity: 0;
+  --card-shadow-horizontal-offset: 0;
+  --card-shadow-vertical-offset: 4px;
+  --card-shadow-blur-radius: 5px;
+
+  --collection-card-outline-opacity: 0.04;
+  --collection-card-outline-width: 1px;
+  --collection-card-border-width: 0;
+  --collection-card-border-opacity: 0.1;
+  --collection-card-corner-radius: 0;
+  --collection-card-shadow-opacity: 0;
+  --collection-card-shadow-horizontal-offset: 0;
+  --collection-card-shadow-vertical-offset: 4px;
+  --collection-card-shadow-blur-radius: 5px;
+
+  --blog-card-outline-opacity: 0.04;
+  --blog-card-outline-width: 1px;
+  --blog-card-border-width: 0;
+  --blog-card-border-opacity: 0.1;
+  --blog-card-corner-radius: 0;
+  --blog-card-shadow-opacity: 0;
+  --blog-card-shadow-horizontal-offset: 0;
+  --blog-card-shadow-vertical-offset: 4px;
+  --blog-card-shadow-blur-radius: 5px;
+
+  --product-card-outline-opacity: 0.04;
+  --product-card-outline-width: 1px;
+  --product-card-border-width: 0;
+  --product-card-border-opacity: 0.1;
+  --product-card-corner-radius: 0;
+  --product-card-shadow-opacity: 0;
+  --product-card-shadow-horizontal-offset: 0;
+  --product-card-shadow-vertical-offset: 4px;
+  --product-card-shadow-blur-radius: 5px;
+
+  --social-icons-outline-opacity: 1;
+  --social-icons-outline-width: 1px;
+
+  --variant-disabled-opacity: 0.4;
+
+  /* Enhanced Variant Picker Variables */
+  --variant-picker-color-text: rgba(var(--color-base-text), 1);
+  --variant-picker-color-background: rgba(var(--color-base-background-1), 1);
+  --variant-picker-color-border: rgba(var(--color-base-text), var(--inputs-border-opacity));
+  --variant-picker-color-border-hover: rgba(var(--color-base-accent-1), 0.8);
+  --variant-picker-color-border-focus: rgba(var(--color-base-accent-1), 1);
+  --variant-picker-color-disabled: rgba(var(--color-base-text), 0.5);
+  --variant-picker-color-placeholder: rgba(var(--color-base-text), 0.6);
+  --variant-picker-color-error: #dc2626;
+  --variant-picker-color-error-bg: #fef2f2;
+  --variant-picker-color-success: #059669;
+  --variant-picker-color-success-bg: #ecfdf5;
+
+  --variant-picker-border-radius: var(--inputs-radius);
+  --variant-picker-padding-horizontal: 1.5rem;
+  --variant-picker-padding-vertical: 1rem;
+  --variant-picker-spacing: 1.5rem;
+  --variant-picker-spacing-small: 0.75rem;
+  --variant-picker-icon-size: 1.5rem;
+  --variant-picker-icon-offset: 4rem;
+
+  --variant-picker-shadow-dropdown: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --variant-picker-shadow-focus: 0 0 0 3px rgba(var(--color-base-accent-1), 0.1);
+  --variant-picker-shadow-error: 0 0 0 3px rgba(220, 38, 38, 0.1);
+
+  --font-body-scale: 1;
+  --font-heading-scale: 1.2;
+}
+
+/* Enhanced Button Styles */
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2.4rem;
+  background: rgb(var(--color-base-accent-1));
+  color: rgb(var(--color-base-solid-button-labels));
+  border: var(--buttons-border-width) solid transparent;
+  border-radius: var(--buttons-radius);
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--duration-short) ease;
+  min-height: 4.4rem;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+}
+
+.btn:hover:not([disabled]):not([aria-disabled="true"]) {
+  background: rgba(var(--color-base-accent-1), 0.8);
+  transform: translateY(-0.1rem);
+}
+
+.btn:focus {
+  background: rgba(var(--color-base-accent-1), 0.8);
+  outline: 0.2rem solid rgba(var(--color-base-accent-1), 0.5);
+  outline-offset: 0.3rem;
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: var(--variant-disabled-opacity);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--full-width {
+  width: 100%;
+}
+
+.btn--primary {
+  background: rgb(var(--color-base-accent-1));
+  color: rgb(var(--color-base-solid-button-labels));
+}
+
+.btn--secondary {
+  background: transparent;
+  color: rgb(var(--color-base-outline-button-labels));
+  border-color: rgba(var(--color-base-outline-button-labels), var(--buttons-border-opacity));
+}
+
+/* Loading States */
+.btn.loading {
+  pointer-events: none;
+}
+
+.btn.loading .btn__text {
+  opacity: 0;
+}
+
+.loading-overlay__spinner {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  animation: rotator 1.4s linear infinite;
+}
+
+.spinner .path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes colors {
+  0% {
+    stroke: #4285F4;
+  }
+
+  25% {
+    stroke: #DE3E35;
+  }
+
+  50% {
+    stroke: #F7C52A;
+  }
+
+  75% {
+    stroke: #1B9A59;
+  }
+
+  100% {
+    stroke: #4285F4;
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg);
+  }
+
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
+}
+
+/* Product Form Styles */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.product-form__error-message-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  color: #dc2626;
+  font-size: 1.4rem;
+}
+
+.product-form__error-message-wrapper .icon {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+/* Enhanced Accessibility */
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  word-wrap: normal !important;
+}
+
+/* Focus visible polyfill support */
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+.focus-visible {
+  outline: 0.2rem solid rgba(var(--color-base-accent-1), 0.5);
+  outline-offset: 0.3rem;
+}
+
+/* Enhanced Base CSS for Shopify Theme with Variant Picker Support */
+
+/* CSS Custom Properties for Theme Consistency */
+:root {
+  --color-base-text: 18, 18, 18;
+  --color-base-background-1: 255, 255, 255;
+  --color-base-background-2: 243, 243, 243;
+  --color-base-solid-button-labels: 255, 255, 255;
+  --color-base-outline-button-labels: 18, 18, 18;
+  --color-base-accent-1: 18, 18, 18;
+  --color-base-accent-2: 334, 334, 334;
+  --gradient-base-background-1: #ffffff;
+  --gradient-base-background-2: #f3f3f3;
+  --gradient-base-accent-1: #121212;
+  --gradient-base-accent-2: #dedede;
+
+  --font-body-family: Assistant, sans-serif;
+  --font-body-style: normal;
+  --font-body-weight: 400;
+  --font-body-weight-bold: 700;
+
+  --font-heading-family: Assistant, sans-serif;
+  --font-heading-style: normal;
+  --font-heading-weight: 400;
+
+  --font-body-scale: 1;
+  --font-heading-scale: 1.2;
+
+  --color-schemes-count: 3;
+
+  --page-width: 120rem;
+  --page-width-margin: 0 2rem;
+
+  --duration-short: 100ms;
+  --duration-default: 200ms;
+  --duration-long: 500ms;
+
+  --spacing-sections-desktop: 0;
+  --spacing-sections-mobile: 0;
+
+  --grid-desktop-vertical-spacing: 3rem;
+  --grid-desktop-horizontal-spacing: 3rem;
+  --grid-mobile-vertical-spacing: 1rem;
+  --grid-mobile-horizontal-spacing: 1rem;
+
+  --text-boxes-border-opacity: 0.1;
+  --text-boxes-border-width: 0;
+  --text-boxes-radius: 0;
+  --text-boxes-shadow-opacity: 0;
+  --text-boxes-shadow-visible: 0;
+  --text-boxes-shadow-horizontal-offset: 0;
+  --text-boxes-shadow-vertical-offset: 4px;
+  --text-boxes-shadow-blur-radius: 5px;
+
+  --buttons-radius: 0;
+  --buttons-radius-outset: 0;
+  --buttons-border-width: 1px;
+  --buttons-border-opacity: 1;
+  --buttons-shadow-opacity: 0;
+  --buttons-shadow-visible: 0;
+  --buttons-shadow-horizontal-offset: 0;
+  --buttons-shadow-vertical-offset: 4px;
+  --buttons-shadow-blur-radius: 5px;
+  --buttons-border-offset: 0;
+
+  --inputs-radius: 0;
+  --inputs-border-width: 1px;
+  --inputs-border-opacity: 0.55;
+  --inputs-shadow-opacity: 0;
+  --inputs-shadow-horizontal-offset: 0;
+  --inputs-margin-offset: 0;
+  --inputs-shadow-vertical-offset: 4px;
+  --inputs-shadow-blur-radius: 5px;
+  --inputs-radius-outset: 0;
+
+  --variant-pills-radius: 4rem;
+  --variant-pills-border-width: 1px;
+  --variant-pills-border-opacity: 0.55;
+  --variant-pills-shadow-opacity: 0;
+  --variant-pills-shadow-horizontal-offset: 0;
+  --variant-pills-shadow-vertical-offset: 4px;
+  --variant-pills-shadow-blur-radius: 5px;
+
+  --media-radius: 0;
+  --media-border-opacity: 0.05;
+  --media-border-width: 1px;
+  --media-shadow-opacity: 0;
+  --media-shadow-horizontal-offset: 0;
+  --media-shadow-vertical-offset: 4px;
+  --media-shadow-blur-radius: 5px;
+
+  --popup-border-width: 1px;
+  --popup-border-opacity: 0.1;
+  --popup-corner-radius: 0;
+  --popup-shadow-opacity: 0.05;
+  --popup-shadow-horizontal-offset: 0;
+  --popup-shadow-vertical-offset: 4px;
+  --popup-shadow-blur-radius: 5px;
+
+  --drawer-border-width: 1px;
+  --drawer-border-opacity: 0.1;
+  --drawer-shadow-opacity: 0;
+  --drawer-shadow-horizontal-offset: 0;
+  --drawer-shadow-vertical-offset: 4px;
+  --drawer-shadow-blur-radius: 5px;
+
+  --badge-corner-radius: 4rem;
+
+  --card-outline-opacity: 0.04;
+  --card-outline-width: 1px;
+  --card-border-width: 0;
+  --card-border-opacity: 0.1;
+  --card-corner-radius: 0;
+  --card-shadow-opacity: 0;
+  --card-shadow-horizontal-offset: 0;
+  --card-shadow-vertical-offset: 4px;
+  --card-shadow-blur-radius: 5px;
+
+  --collection-card-outline-opacity: 0.04;
+  --collection-card-outline-width: 1px;
+  --collection-card-border-width: 0;
+  --collection-card-border-opacity: 0.1;
+  --collection-card-corner-radius: 0;
+  --collection-card-shadow-opacity: 0;
+  --collection-card-shadow-horizontal-offset: 0;
+  --collection-card-shadow-vertical-offset: 4px;
+  --collection-card-shadow-blur-radius: 5px;
+
+  --blog-card-outline-opacity: 0.04;
+  --blog-card-outline-width: 1px;
+  --blog-card-border-width: 0;
+  --blog-card-border-opacity: 0.1;
+  --blog-card-corner-radius: 0;
+  --blog-card-shadow-opacity: 0;
+  --blog-card-shadow-horizontal-offset: 0;
+  --blog-card-shadow-vertical-offset: 4px;
+  --blog-card-shadow-blur-radius: 5px;
+
+  --product-card-outline-opacity: 0.04;
+  --product-card-outline-width: 1px;
+  --product-card-border-width: 0;
+  --product-card-border-opacity: 0.1;
+  --product-card-corner-radius: 0;
+  --product-card-shadow-opacity: 0;
+  --product-card-shadow-horizontal-offset: 0;
+  --product-card-shadow-vertical-offset: 4px;
+  --product-card-shadow-blur-radius: 5px;
+
+  --social-icons-outline-opacity: 1;
+  --social-icons-outline-width: 1px;
+
+  --variant-disabled-opacity: 0.4;
+
+  /* Enhanced Variant Picker Variables */
+  --variant-picker-color-text: rgba(var(--color-base-text), 1);
+  --variant-picker-color-background: rgba(var(--color-base-background-1), 1);
+  --variant-picker-color-border: rgba(var(--color-base-text), var(--inputs-border-opacity));
+  --variant-picker-color-border-hover: rgba(var(--color-base-accent-1), 0.8);
+  --variant-picker-color-border-focus: rgba(var(--color-base-accent-1), 1);
+  --variant-picker-color-disabled: rgba(var(--color-base-text), 0.5);
+  --variant-picker-color-placeholder: rgba(var(--color-base-text), 0.6);
+  --variant-picker-color-error: #dc2626;
+  --variant-picker-color-error-bg: #fef2f2;
+  --variant-picker-color-success: #059669;
+  --variant-picker-color-success-bg: #ecfdf5;
+
+  --variant-picker-border-radius: var(--inputs-radius);
+  --variant-picker-padding-horizontal: 1.5rem;
+  --variant-picker-padding-vertical: 1rem;
+  --variant-picker-spacing: 1.5rem;
+  --variant-picker-spacing-small: 0.75rem;
+  --variant-picker-icon-size: 1.5rem;
+  --variant-picker-icon-offset: 4rem;
+
+  --variant-picker-shadow-dropdown: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --variant-picker-shadow-focus: 0 0 0 3px rgba(var(--color-base-accent-1), 0.1);
+  --variant-picker-shadow-error: 0 0 0 3px rgba(220, 38, 38, 0.1);
+
+  --font-body-scale: 1;
+  --font-heading-scale: 1.2;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: calc(var(--font-body-scale) * 62.5%);
+  height: 100%;
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-columns: 100%;
+  min-height: 100%;
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.06rem;
+  line-height: calc(1 + 0.8 / var(--font-body-scale));
+  font-family: var(--font-body-family);
+  font-style: var(--font-body-style);
+  font-weight: var(--font-body-weight);
+  color: rgba(var(--color-base-text), 0.75);
+  background-color: rgb(var(--color-base-background-1));
+}
+
+@media screen and (min-width: 750px) {
+  body {
+    font-size: 1.6rem;
+  }
+}
+
+/* Enhanced Variant Picker Styles */
+.variant-picker {
+  margin: 2rem 0;
+}
+
+.variant-picker__fieldset {
+  border: none;
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+}
+
+.variant-picker__legend {
+  font-weight: var(--font-body-weight-bold);
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+  font-size: 1.4rem;
+  color: rgba(var(--color-base-text), 1);
+}
+
+.variant-picker__legend-note {
+  font-weight: var(--font-body-weight);
+  font-size: 1.2rem;
+  color: rgba(var(--color-base-text), 0.7);
+}
+
+.variant-picker__option-wrapper {
+  position: relative;
+}
+
+.variant-picker__select {
+  appearance: none;
+  background-color: rgba(var(--color-base-background-1), 1);
+  border: var(--inputs-border-width) solid rgba(var(--color-base-text), var(--inputs-border-opacity));
+  border-radius: var(--inputs-radius);
+  color: rgba(var(--color-base-text), 0.85);
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  padding: 1rem 4rem 1rem 1.5rem;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color var(--duration-short) ease,
+    box-shadow var(--duration-short) ease;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--inputs-padding-horizontal) center;
+  background-repeat: no-repeat;
+  background-size: var(--variant-picker-icon-size) var(--variant-picker-icon-size);
+}
+
+.variant-picker__select:hover:not(:disabled) {
+  border-color: var(--variant-picker-color-border-hover);
+  box-shadow: var(--variant-picker-shadow-dropdown);
+}
+
+.variant-picker__select:focus {
+  border-color: var(--variant-picker-color-border-focus);
+  box-shadow: var(--variant-picker-shadow-focus);
+  outline: none;
+}
+
+.variant-picker__select:focus-visible {
+  outline: 0.2rem solid var(--variant-picker-color-border-focus);
+  outline-offset: 0.2rem;
+}
+
+.variant-picker__select:disabled {
+  background-color: var(--variant-picker-color-error-bg);
+  color: var(--variant-picker-color-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.variant-picker__select[aria-busy="true"] {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+/* Option Styles */
+.variant-picker__select option {
+  background-color: var(--variant-picker-color-background);
+  color: var(--variant-picker-color-text);
+  padding: 0.5rem var(--variant-picker-padding-horizontal);
+  font-weight: inherit;
+}
+
+.variant-picker__select option:disabled {
+  color: var(--variant-picker-color-disabled);
+  font-style: italic;
+  background-color: var(--variant-picker-color-error-bg);
+}
+
+.variant-picker__select option:checked,
+.variant-picker__select option:hover {
+  background-color: rgba(var(--color-foreground, 18, 18, 18), 0.1);
+}
+
+/* Loading State */
+.variant-picker--loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.variant-picker--loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(var(--color-background, 255, 255, 255), 0.8);
+  border-radius: var(--variant-picker-border-radius);
+  z-index: 1;
+  backdrop-filter: blur(1px);
+}
+
+.variant-picker--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin: -1rem 0 0 -1rem;
+  border: 0.2rem solid var(--variant-picker-color-border);
+  border-top-color: var(--variant-picker-color-border-focus);
+  border-radius: 50%;
+  animation: variant-picker-spin 1s linear infinite;
+  z-index: 2;
+}
+
+@keyframes variant-picker-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.variant-picker--error .variant-picker__select {
+  border-color: var(--variant-picker-color-error);
+  box-shadow: var(--variant-picker-shadow-error);
+  background-color: var(--variant-picker-color-error-bg);
+}
+
+.variant-picker--error .variant-picker__legend {
+  color: var(--variant-picker-color-error);
+}
+
+.variant-picker--error {
+  animation: variant-picker-shake 0.5s ease-in-out;
+}
+
+@keyframes variant-picker-shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-0.5rem);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(0.5rem);
+  }
+}
+
+/* Success State */
+.variant-picker--success .variant-picker__select {
+  border-color: var(--variant-picker-color-success);
+  background-color: var(--variant-picker-color-success-bg);
+}
+
+.variant-picker--success {
+  animation: variant-picker-success 0.3s ease-out;
+}
+
+@keyframes variant-picker-success {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Availability Indicators */
+.variant-availability {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--variant-picker-spacing-small);
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.variant-availability::before {
+  content: '';
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+.variant-availability--available {
+  color: var(--variant-picker-color-success);
+}
+
+.variant-availability--sold-out {
+  color: var(--variant-picker-color-error);
+}
+
+.variant-availability--select {
+  color: var(--variant-picker-color-placeholder);
+}
+
+/* Price Display Enhancements */
+.variant-price {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: var(--variant-picker-spacing-small);
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+
+.variant-price .price--on-sale {
+  color: var(--variant-picker-color-error);
+  font-size: 1.1em;
+}
+
+.variant-price .price--compare {
+  text-decoration: line-through;
+  color: var(--variant-picker-color-disabled);
+  font-weight: 400;
+  font-size: 0.9em;
+}
+
+.variant-price .price--regular {
+  color: var(--variant-picker-color-text);
+}
+
+/* Loading and Error Indicators */
+.variant-picker__loading,
+.variant-picker__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--variant-picker-spacing-small);
+  padding: 0.5rem;
+  border-radius: var(--variant-picker-border-radius);
+  font-size: 1.3rem;
+}
+
+.variant-picker__loading {
+  background-color: var(--variant-picker-color-success-bg);
+  color: var(--variant-picker-color-success);
+}
+
+.variant-picker__error {
+  background-color: var(--variant-picker-color-error-bg);
+  color: var(--variant-picker-color-error);
+}
+
+.loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 0.15rem solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: variant-picker-spin 1s linear infinite;
+}
+
+.error-icon {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media screen and (min-width: 750px) {
+  .variant-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--variant-picker-spacing);
+    align-items: start;
+  }
+
+  .variant-picker__fieldset {
+    margin-bottom: 0;
+  }
+
+  .variant-picker__select {
+    font-size: 1.5rem;
+    min-height: 4.6rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .variant-picker__select {
+    padding: 1.2rem 4.5rem 1.2rem 1.8rem;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .variant-picker__select {
+    min-height: 4.8rem;
+    font-size: 1.6rem;
+    padding: 1.2rem var(--variant-picker-icon-offset) 1.2rem var(--variant-picker-padding-horizontal);
+  }
+
+  .variant-picker__select option {
+    padding: 1rem;
+    min-height: 4rem;
+  }
+
+  /* Larger touch targets */
+  .variant-picker__legend {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+
+  .variant-picker__select,
+  .variant-picker--loading::after,
+  .loading-spinner {
+    animation: none;
+    transition: none;
+  }
+
+  .variant-picker--error {
+    animation: none;
+  }
+
+  .variant-picker--success {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .variant-picker__select {
+    border-width: 0.2rem;
+    border-color: var(--variant-picker-color-text);
+  }
+
+  .variant-picker__select:focus {
+    box-shadow: 0 0 0 0.3rem rgba(var(--color-foreground, 18, 18, 18), 0.5);
+    border-color: var(--variant-picker-color-text);
+  }
+
+  .variant-picker__select option:disabled {
+    background-color: transparent;
+    text-decoration: line-through;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .variant-picker__select {
+  background-position: left var(--variant-picker-padding-horizontal) center;
+  padding: var(--variant-picker-padding-vertical) var(--variant-picker-padding-horizontal) var(--variant-picker-padding-vertical) var(--variant-picker-icon-offset);
+
+  /* RTL dropdown arrow */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m14 8-4 4-4-4'/%3e%3c/svg%3e");
+}
+
+/* Screen Reader Only Content */
+.variant-picker__sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Print Styles */
+@media print {
+
+  .variant-picker,
+  variant-picker-dropdown {
+    display: none !important;
+  }
+}
+
+/* Browser-Specific Enhancements */
+@supports (backdrop-filter: blur(1px)) {
+  .variant-picker--loading::before {
+    backdrop-filter: blur(1px);
+  }
+}
+
+@supports (mask: url("data:image/svg+xml")) {
+  .variant-picker__select {
+    background-image: none;
+    padding-right: calc(var(--variant-picker-icon-offset) + 0.5rem);
+  }
+
+  .variant-picker__select::after {
+    content: '';
+    position: absolute;
+    right: var(--variant-picker-padding-horizontal);
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--variant-picker-icon-size);
+    height: var(--variant-picker-icon-size);
+    mask: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") no-repeat center;
+    background-color: currentColor;
+    pointer-events: none;
+  }
+
+  [dir="rtl"] .variant-picker__select::after {
+    right: auto;
+    left: var(--variant-picker-padding-horizontal);
+  }
+}
+
+/* Custom Select Enhancement for Better Browsers */
+@supports (appearance: none) and (background-clip: text) {
+  .variant-picker__select:focus {
+    background-color: rgba(var(--color-foreground, 18, 18, 18), 0.02);
+  }
+}
+
+/* Enhanced Focus States for Keyboard Users */
+.variant-picker__select:focus:not(:focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.variant-picker__select:focus-visible {
+  box-shadow: var(--variant-picker-shadow-focus);
+  outline: 0.2rem solid var(--variant-picker-color-border-focus);
+  outline-offset: 0.1rem;
+}
+
+/* Container Queries Support (Future Enhancement) */
+@supports (container-type: inline-size) {
+  .variant-picker {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 300px) {
+    .variant-picker {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Enhanced Product Variant Picker Snippet */
+  {
+  %- comment -%
+}
+
+Enhanced Product Variant Picker Snippet Renders dropdown-style variant picker with accessibility support Accepts: - product: {
+  Object
+}
+
+Product object - update_url: {
+  Boolean
+}
+
+Whether to update URL on variant change (optional) - block: {
+  Object
+}
+
+Section block object (optional) Usage: {
+  % render 'product-variant-picker',
+  product: product, update_url: true %
+}
+
+  {
+  %- endcomment -%
+}
+
+  {
+  %- liquid # Validate product has variants unless product and product.variants.size>1 comment Single variant or no product - render hidden input endcomment if product.variants.size==1 echo '<input type="hidden" name="id" value="' | append: product.selected_or_first_available_variant.id | append: '">'
+    endif break endunless # Get settings assign enable_variant_images=settings.enable_variant_images | default: true assign enable_dynamic_pricing=settings.enable_dynamic_pricing | default: true assign show_variant_availability=settings.show_variant_availability | default: true assign enable_variant_url_updates=settings.enable_variant_url_updates | default: true assign variant_selection_behavior=settings.variant_selection_behavior | default: 'auto_select_first'
+
+    # Prepare variant data for JavaScript assign variant_data=product.variants | json assign option_data=product.options_with_values | json # Get current variant from URL or first available assign current_variant=product.selected_or_first_available_variant if variant_selection_behavior=='preselect_from_url'
+    assign url_variant_id=request.params.variant if url_variant_id for variant in product.variants if variant.id==url_variant_id assign current_variant=variant break endif endfor endif endif -%
+}
+
+<variant-picker-dropdown class="variant-picker no-js-hidden"
+data-product-id="{{ product.id }}"
+data-section="{{ section.id | default: 'product-form' }}"
+data-url-update="{{ enable_variant_url_updates }}"
+role="group"
+
+aria-label="{{ 'products.product.product_variants' | t }}"> {
+  %- comment -%
+}
+
+Product and variant data for JavaScript {
+  %- endcomment -%
+}
+
+<script type="application/json" data-variant-data> {
+  "id": {
+      {
+      product.id | json
+    }
+  }
+
+  ,
+  "title": {
+      {
+      product.title | json
+    }
+  }
+
+  ,
+  "handle": {
+      {
+      product.handle | json
+    }
+  }
+
+  ,
+  "variants": {
+      {
+      variant_data
+    }
+  }
+
+  ,
+  "options": {
+      {
+      option_data
+    }
+  }
+
+  ,
+  "selectedVariant": {
+      {
+      current_variant | json
+    }
+  }
+
+  ,
+  "settings": {
+    "enableVariantImages": {
+        {
+        enable_variant_images | json
+      }
+    }
+
+    ,
+    "enableDynamicPricing": {
+        {
+        enable_dynamic_pricing | json
+      }
+    }
+
+    ,
+    "showVariantAvailability": {
+        {
+        show_variant_availability | json
+      }
+    }
+
+    ,
+    "enableUrlUpdates": {
+        {
+        enable_variant_url_updates | json
+      }
+    }
+
+    ,
+    "selectionBehavior": {
+        {
+        variant_selection_behavior | json
+      }
+    }
+  }
+}
+
+</script> {
+  %- comment -%
+}
+
+Hidden variant ID input for form submission {
+  %- endcomment -%
+}
+
+<input type="hidden"
+name="id"
+value="{{ current_variant.id | default: '' }}"
+
+data-variant-id-input> {
+  %- comment -%
+}
+
+Variant availability display {
+  %- endcomment -%
+}
+
+  {
+  %- if show_variant_availability -%
+}
+
+<div class="variant-availability" data-variant-availability aria-live="polite"> {
+  %- if current_variant -%
+}
+
+  {
+  %- if current_variant.available -%
+}
+
+<span class="variant-availability--available"> {
+    {
+    'products.product.available' | t
+  }
+}
+
+</span> {
+  %- else -%
+}
+
+<span class="variant-availability--sold-out"> {
+    {
+    'products.product.sold_out' | t
+  }
+}
+
+</span> {
+  %- endif -%
+}
+
+  {
+  %- else -%
+}
+
+  {
+    {
+    'products.product.select_options' | t
+  }
+}
+
+  {
+  %- endif -%
+}
+
+</div> {
+  %- endif -%
+}
+
+  {
+  %- comment -%
+}
+
+Price display (if dynamic pricing enabled) {
+  %- endcomment -%
+}
+
+  {
+  %- if enable_dynamic_pricing -%
+}
+
+<div class="variant-price" data-variant-price aria-live="polite"> {
+  %- if current_variant -%
+}
+
+  {
+  %- if current_variant.compare_at_price>current_variant.price -%
+}
+
+<span class="price--on-sale"> {
+    {
+    current_variant.price | money
+  }
+}
+
+</span><span class="price--compare"> {
+    {
+    current_variant.compare_at_price | money
+  }
+}
+
+</span> {
+  %- else -%
+}
+
+<span class="price--regular"> {
+    {
+    current_variant.price | money
+  }
+}
+
+</span> {
+  %- endif -%
+}
+
+  {
+  %- else -%
+}
+
+<span class="price--placeholder"> {
+    {
+    'products.product.price.from_price_html' | t: price: product.price_min | money
+  }
+}
+
+</span> {
+  %- endif -%
+}
+
+</div> {
+  %- endif -%
+}
+
+  {
+  %- comment -%
+}
+
+Loading indicator {
+  %- endcomment -%
+}
+
+<div class="variant-picker__loading visually-hidden" data-loading-indicator><span class="loading-spinner" aria-hidden="true"></span><span class="loading-text"> {
+    {
+    'products.product.updating_variants' | t
+  }
+}
+
+</span></div> {
+  %- comment -%
+}
+
+Error display {
+  %- endcomment -%
+}
+
+<div class="variant-picker__error visually-hidden" data-error-display role="alert" aria-live="assertive"><span class="error-icon" aria-hidden="true">⚠</span><span class="error-text"></span></div></variant-picker-dropdown> {
+  %- comment -%
+}
+
+Fallback for browsers without JavaScript {
+  %- endcomment -%
+}
+
+<noscript><div class="variant-picker variant-picker--fallback"><p class="variant-picker__noscript-message"> {
+    {
+    'products.product.noscript_variant_instructions' | t
+  }
+}
+
+</p> {
+  %- for option in product.options_with_values -%
+}
+
+<fieldset class="variant-picker__fieldset"><legend class="variant-picker__legend"> {
+    {
+    option.name
+  }
+}
+
+</legend><select name="options[{{ option.name }}]" class="variant-picker__select"> {
+  %- for value in option.values -%
+}
+
+<option value="{{ value | escape }}"> {
+    {
+    value
+  }
+}
+
+</option> {
+  %- endfor -%
+}
+
+</select></fieldset> {
+  %- endfor -%
+}
+
+<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"></div></noscript>
+
+/**
+ * Enhanced Variant Picker CSS
+ * Following Shopify Theme Development Instructions
+ * Mobile-first responsive design with accessibility focus
+ */
+
+/* CSS Custom Properties for theming */
+:root {
+  --variant-picker-border-color: #d1d5db;
+  --variant-picker-border-radius: 0.375rem;
+  --variant-picker-focus-color: #2563eb;
+  --variant-picker-error-color: #dc2626;
+  --variant-picker-success-color: #059669;
+  --variant-picker-text-color: #374151;
+  --variant-picker-bg-color: #ffffff;
+  --variant-picker-disabled-bg: #f9fafb;
+  --variant-picker-disabled-text: #9ca3af;
+  --variant-picker-spacing: 1rem;
+  --variant-picker-font-size: 1rem;
+  --variant-picker-line-height: 1.5;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --variant-picker-border-color: #4b5563;
+    --variant-picker-text-color: #f9fafb;
+    --variant-picker-bg-color: #1f2937;
+    --variant-picker-disabled-bg: #374151;
+    --variant-picker-disabled-text: #6b7280;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --variant-picker-border-color: #000000;
+    --variant-picker-focus-color: #0000ff;
+    --variant-picker-error-color: #ff0000;
+    --variant-picker-success-color: #008000;
+  }
+}
+
+/* Base variant selector styles */
+.variant-selector {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--variant-picker-spacing);
+}
+
+.variant-selector--dropdown {
+  /* Specific styles for dropdown variant */
+}
+
+/* Product form input styles */
+.product-form__input--variant-picker {
+  margin-bottom: var(--variant-picker-spacing);
+}
+
+.product-form__input--dropdown {
+  position: relative;
+  margin-bottom: calc(var(--variant-picker-spacing) * 0.75);
+}
+
+/* Form labels with enhanced accessibility */
+.form__label {
+  display: block;
+  font-size: var(--variant-picker-font-size);
+  font-weight: 500;
+  color: var(--variant-picker-text-color);
+  margin-bottom: 0.5rem;
+  line-height: var(--variant-picker-line-height);
+}
+
+.form__label:focus-within {
+  color: var(--variant-picker-focus-color);
+}
+
+/* Select container with enhanced styling */
+.select {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.select__select {
+  appearance: none;
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  border: 2px solid var(--variant-picker-border-color);
+  border-radius: var(--variant-picker-border-radius);
+  background-color: var(--variant-picker-bg-color);
+  color: var(--variant-picker-text-color);
+  font-size: var(--variant-picker-font-size);
+  line-height: var(--variant-picker-line-height);
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Enhanced focus states for accessibility */
+.select__select:focus {
+  outline: none;
+  border-color: var(--variant-picker-focus-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.select__select:focus-visible {
+  outline: 2px solid var(--variant-picker-focus-color);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.select__select:disabled {
+  background-color: var(--variant-picker-disabled-bg);
+  color: var(--variant-picker-disabled-text);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Select dropdown icon */
+.select .icon-caret {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--variant-picker-text-color);
+  pointer-events: none;
+  transition: transform 0.15s ease-in-out;
+}
+
+.select__select:focus + .icon-caret {
+  color: var(--variant-picker-focus-color);
+}
+
+.select__select[aria-expanded="true"] + .icon-caret {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Option styling for unavailable variants */
+.select__select option:disabled {
+  color: var(--variant-picker-disabled-text);
+  font-style: italic;
+}
+
+.select__select option[data-sold-out="true"] {
+  color: var(--variant-picker-error-color);
+}
+
+/* Variant availability display */
+.variant-selector__availability {
+  margin-top: 0.5rem;
+}
+
+.variant-selector__availability-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.variant-selector__availability-text--available {
+  color: var(--variant-picker-success-color);
+}
+
+.variant-selector__availability-text--unavailable {
+  color: var(--variant-picker-error-color);
+}
+
+/* Error message styling */
+.form__message {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.form__message--error {
+  color: var(--variant-picker-error-color);
+}
+
+.form__message--error[hidden] {
+  display: none;
+}
+
+/* Variant picker error display */
+.variant-selector__error {
+  display: none;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--variant-picker-border-radius);
+  color: var(--variant-picker-error-color);
+  font-size: 0.875rem;
+}
+
+/* Loading state */
+.variant-selector[data-loading="true"] .select__select {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Mobile-first responsive design */
+@media (min-width: 640px) {
+  .variant-selector {
+    /* Tablet styles */
+  }
+  
+  .product-form__input--dropdown {
+    margin-bottom: var(--variant-picker-spacing);
+  }
+}
+
+@media (min-width: 768px) {
+  .variant-selector {
+    /* Desktop styles */
+  }
+}
+
+@media (min-width: 1024px) {
+  .variant-selector {
+    /* Large desktop styles */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .select__select,
+  .icon-caret {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .variant-selector {
+    break-inside: avoid;
+  }
+  
+  .select__select {
+    border: 1px solid #000;
+    background: white;
+  }
+}
+
+/* Screen reader only content */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus management for skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--variant-picker-focus-color);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced hover states for better UX */
+.select__select:hover:not(:disabled) {
+  border-color: var(--variant-picker-focus-color);
+}
+
+/* Animation for availability changes */
+.variant-selector__availability-text {
+  transition: color 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for select options (webkit) */
+.select__select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.select__select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.select__select::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.select__select::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* RTL support */
+[dir="rtl"] .select .icon-caret {
+  right: auto;
+  left: 0.75rem;
+}
+
+[dir="rtl"] .select__select {
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+}
+
+/* Component state classes */
+.variant-selector--error .select__select {
+  border-color: var(--variant-picker-error-color);
+}
+
+.variant-selector--success .select__select {
+  border-color: var(--variant-picker-success-color);
+}
+
+.variant-selector--loading .select__select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z' opacity='.25'/%3E%3Cpath fill='%23666' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Form validation styling */
+.variant-selector[data-valid="false"] .select__select {
+  border-color: var(--variant-picker-error-color);
+}
+
+.variant-selector[data-valid="true"] .select__select {
+  border-color: var(--variant-picker-success-color);
+}

@@ -1,0 +1,162 @@
+name: Deploy to Shopify
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  theme-check:
+    runs-on: ubuntu-latest
+    name: Theme Check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Shopify CLI
+        run: npm install -g @shopify/cli@latest
+
+      - name: Run theme check
+        run: npm run check
+
+  deploy-development:
+    runs-on: ubuntu-latest
+    name: Deploy to Development
+    if: github.event_name == 'pull_request'
+    needs: theme-check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Shopify CLI
+        run: npm install -g @shopify/cli@latest
+
+      - name: Authenticate with Shopify
+        run: |
+          echo "Setting up Shopify authentication..."
+          shopify auth logout || true
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+
+      - name: Deploy to development theme
+        run: |
+          shopify theme push \
+            --development \
+            --store=${{ secrets.SHOPIFY_STORE }} \
+            --path=. \
+            --json
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: theme-check
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Shopify CLI
+        run: npm install -g @shopify/cli@latest
+
+      - name: Authenticate with Shopify
+        run: |
+          echo "Setting up Shopify authentication..."
+          shopify auth logout || true
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+
+      - name: Deploy to live theme
+        run: |
+          shopify theme push \
+            --live \
+            --store=${{ secrets.SHOPIFY_STORE }} \
+            --path=. \
+            --json
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+
+  validate-theme:
+    runs-on: ubuntu-latest
+    name: Validate Theme Structure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required files
+        run: |
+          echo "Checking theme structure..."
+          
+          # Check for required directories
+          required_dirs=("assets" "config" "layout" "locales" "sections" "snippets" "templates")
+          for dir in "${required_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "❌ Missing required directory: $dir"
+              exit 1
+            else
+              echo "✅ Found directory: $dir"
+            fi
+          done
+          
+          # Check for critical files
+          critical_files=("layout/theme.liquid" "config/settings_schema.json" "locales/en.default.json")
+          for file in "${critical_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing critical file: $file"
+              exit 1
+            else
+              echo "✅ Found file: $file"
+            fi
+          done
+          
+          echo "✅ Theme structure validation passed!"
+
+      - name: Check variant picker integration
+        run: |
+          echo "Checking variant picker files..."
+          
+          variant_files=("assets/variant-picker-dropdown.js" "assets/variant-selector.css" "snippets/product-variant-picker.liquid")
+          for file in "${variant_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing variant picker file: $file"
+              exit 1
+            else
+              echo "✅ Found variant picker file: $file"
+            fi
+          done
+          
+          echo "✅ Variant picker integration validation passed!"
