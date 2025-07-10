@@ -1,0 +1,34 @@
+{%- comment -%}
+Emoji Picker integration using Emoji Button (CDN)
+Include this snippet where you want an emoji picker input (e.g., in a section or product form).
+- Add an input with class 'emoji-input' and a button with class 'emoji-picker-btn'.
+- This script will attach the emoji picker to the button and insert the selected emoji into the input.
+{%- endcomment -%}
+
+<!-- Emoji Button CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@latest/dist/emoji-button.min.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var trigger = document.querySelector('.emoji-picker-btn');
+  var input = document.querySelector('.emoji-input');
+  if (trigger && input && window.EmojiButton) {
+    var picker = new EmojiButton({
+      position: 'bottom-start',
+      autoHide: false,
+      showSearch: true,
+      showRecents: true,
+      theme: 'auto',
+    });
+    picker.on('emoji', function(emoji) {
+      input.value += emoji;
+      input.dispatchEvent(new Event('input'));
+    });
+    trigger.addEventListener('click', function() {
+      picker.togglePicker(trigger);
+    });
+  }
+});
+</script>
+
+<input type="text" class="emoji-input" placeholder="Type or pick emoji">
+<button type="button" class="emoji-picker-btn">😀</button>
