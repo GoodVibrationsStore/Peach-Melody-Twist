@@ -5,55 +5,18 @@
     "theme_version": "1.0.0",
     "theme_author": "Your Name",
     "theme_documentation_url": "https://help.shopify.com/",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_support_url": "https://support.shopify.com/",
+    "color_system": "200+ CSS color variables in assets/colors-emojis.css",
+    "emoji_support": "Emoji font and picker in Marquee section"
   },
   {
-    "name": "Colors",
+    "name": "Theme settings",
     "settings": [
       {
-        "type": "header",
-        "content": "Color scheme"
-      },
-      {
-        "type": "color_scheme_group",
+        "type": "color_schemes",
         "id": "color_schemes",
-        "definition": [
-          {
-            "type": "color",
-            "id": "background",
-            "label": "Background"
-          },
-          {
-            "type": "color_background",
-            "id": "background_gradient",
-            "label": "Background gradient"
-          },
-          {
-            "type": "color",
-            "id": "text",
-            "label": "Text"
-          },
-          {
-            "type": "color",
-            "id": "button",
-            "label": "Button"
-          },
-          {
-            "type": "color",
-            "id": "button_label",
-            "label": "Button label"
-          },
-          {
-            "type": "color",
-            "id": "secondary_button_label",
-            "label": "Secondary button label"
-          },
-          {
-            "type": "color",
-            "id": "shadow",
-            "label": "Shadow"
-          }
-        ]
+        "role": "color_schemes",
+        "label": "Color Schemes"
       }
     ]
   },
