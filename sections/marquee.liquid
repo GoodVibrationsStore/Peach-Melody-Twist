@@ -1,0 +1,83 @@
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "marquee_text",
+      "label": "Marquee Text",
+      "default": "Welcome to our store! 🎉"
+    },
+    {
+      "type": "select",
+      "id": "marquee_emoji",
+      "label": "Emoji",
+      "options": [
+        { "value": "🎉", "label": "Party Popper" },
+        { "value": "🔥", "label": "Fire" },
+        { "value": "✨", "label": "Sparkles" },
+        { "value": "🛒", "label": "Shopping Cart" },
+        { "value": "💎", "label": "Gem Stone" },
+        { "value": "🌈", "label": "Rainbow" },
+        { "value": "⭐", "label": "Star" },
+        { "value": "❤️", "label": "Heart" },
+        { "value": "🚀", "label": "Rocket" },
+        { "value": "🛍️", "label": "Shopping Bags" }
+      ],
+      "default": "🎉"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Speed (seconds)",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "marquee_direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "marquee_bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "marquee_text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="marquee" style="background: {{ section.settings.marquee_bg_color }}; color: {{ section.settings.marquee_text_color }};">
+  <span class="marquee-emoji">{{ section.settings.marquee_emoji }}</span>
+  <span class="marquee-text">{{ section.settings.marquee_text }}</span>
+</div>
+<style>
+.marquee {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: marquee-scroll linear infinite;
+  animation-duration: {{ section.settings.marquee_speed }}s;
+  font-size: 1.5em;
+  padding: 0.5em 1em;
+}
+@keyframes marquee-scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+</style>

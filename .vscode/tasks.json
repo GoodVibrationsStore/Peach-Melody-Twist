@@ -1,0 +1,205 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Shopify: Start Development Server",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"@shopify/cli@latest",
+				"theme",
+				"dev",
+				"--store=${input:shopifyStore}"
+			],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Shopify: Deploy to Development",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"@shopify/cli@latest",
+				"theme",
+				"push",
+				"--development",
+				"--store=${input:shopifyStore}"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Shopify: Deploy to Live Theme",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"@shopify/cli@latest",
+				"theme",
+				"push",
+				"--live",
+				"--store=${input:shopifyStore}"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Shopify: Theme Check",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"@shopify/cli@latest",
+				"theme",
+				"check"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				{
+					"owner": "shopify-theme-check",
+					"fileLocation": [
+						"relative",
+						"${workspaceFolder}"
+					],
+					"pattern": {
+						"regexp": "^(.*):(\\d+):(\\d+): (warning|error): (.*)$",
+						"file": 1,
+						"line": 2,
+						"column": 3,
+						"severity": 4,
+						"message": 5
+					}
+				}
+			]
+		},
+		{
+			"label": "Shopify: Authenticate",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"@shopify/cli@latest",
+				"theme",
+				"dev",
+				"--store=${input:shopifyStore}"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		}
+	],
+	"inputs": [
+		{
+			"id": "shopifyStore",
+			"description": "Your Shopify store URL",
+			"default": "yourstore.myshopify.com",
+			"type": "promptString"
+		}
+	],
+	"files.associations": {
+		"*.liquid": "liquid",
+		"*.css.liquid": "liquid",
+		"*.js.liquid": "liquid",
+		"*.scss.liquid": "liquid"
+	},
+	"emmet.includeLanguages": {
+		"liquid": "html"
+	},
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"css.validate": true,
+	"javascript.validate.enable": true,
+	"typescript.validate.enable": true,
+	"[liquid]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "sissel.shopify-liquid",
+		"editor.quickSuggestions": {
+			"other": true,
+			"comments": false,
+			"strings": true
+		}
+	},
+	"[css]": {
+		"editor.defaultFormatter": "vscode.css-language-features"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	},
+	"shopifyLiquid.themeCheck.enable": true,
+	"shopifyLiquid.themeCheck.onSave": true,
+	"shopifyLiquid.themeCheck.checkOnChange": true,
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/.git": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/.shopifyignore": true
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/.DS_Store": true,
+		"**/.env": true
+	},
+	"liquid.completion.enabled": true,
+	"liquid.hover.enabled": true,
+	"liquid.formatting.enable": true,
+	"cSpell.words": [
+		"Shopify",
+		"shopify",
+		"liquid",
+		"metafields",
+		"storefront"
+	],
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	},
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/**": true
+	}
+}

@@ -1,0 +1,56 @@
+{
+  "name": "shopify-theme-rep",
+  "version": "1.0.0",
+  "description": "Enhanced Shopify theme with dropdown-only variant picker system",
+  "main": "index.js",
+  "scripts": {
+    "dev": "shopify theme dev",
+    "dev:notify": "shopify theme dev --notify=file_watcher",
+    "dev:store": "shopify theme dev --store",
+    "dev:hot": "shopify theme dev --hot-reload",
+    "build": "shopify theme check",
+    "deploy": "shopify theme push --development",
+    "deploy:live": "shopify theme push --live",
+    "pull": "shopify theme pull",
+    "pull:live": "shopify theme pull --live",
+    "check": "shopify theme check",
+    "check:fix": "shopify theme check --auto-correct",
+    "package": "shopify theme package",
+    "login": "shopify auth login",
+    "logout": "shopify auth logout",
+    "console": "shopify theme console",
+    "list": "shopify theme list",
+    "open": "shopify theme open",
+    "share": "shopify theme share",
+    "test": "shopify theme check --auto-correct",
+    "lint": "shopify theme check",
+    "format": "shopify theme check --auto-correct",
+    "preview": "shopify theme dev --theme-editor-sync",
+    "info": "shopify theme info"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "variant-picker",
+    "dropdown",
+    "accessibility",
+    "responsive",
+    "ecommerce"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@shopify/cli": "latest"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "shopify": {
+    "theme": {
+      "id": "development",
+      "name": "Enhanced Shopify Theme"
+    }
+  }
+}

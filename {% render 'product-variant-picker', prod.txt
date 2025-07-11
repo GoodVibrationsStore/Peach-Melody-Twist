@@ -1,0 +1,1 @@
+{% render 'product-variant-picker', product: product, update_url: true %}

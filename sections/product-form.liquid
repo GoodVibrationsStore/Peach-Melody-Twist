@@ -1,0 +1,725 @@
+<article class="product" data-section="{{ section.id }}">
+  <div class="product__media-wrapper">
+    <div class="product__media">
+      {%- for media in product.media -%}
+        <div
+          class="product__media-item"
+          data-product-image
+          data-variant-id="{{ media.variant_ids | join: ',' }}">
+          {%- if media.media_type == 'image' -%}
+            <img
+              src="{{ media | image_url: width: 800 }}"
+              alt="{{ media.alt | escape }}"
+              loading="lazy"
+              width="{{ media.width }}"
+              height="{{ media.height }}"
+              data-variant-image>
+          {%- elsif media.media_type == 'video' -%}
+            {{ media | video_tag: autoplay: false, controls: true }}
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="product__info">
+    <div class="product__info-wrapper">
+      {%- assign product_form_id = 'product-form-' | append: section.id -%}
+      
+      <form 
+        action="{{ routes.cart_add_url }}" 
+        method="post" 
+        enctype="multipart/form-data" 
+        id="{{ product_form_id }}"
+        class="form"
+        novalidate="novalidate"
+        data-type="add-to-cart-form">
+        
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
+        
+        <product-form 
+          class="product-form" 
+          data-hide-errors="{{ section.settings.hide_errors }}" 
+          data-section-id="{{ section.id }}"
+          data-product-url="{{ product.url }}"
+          data-url="{{ product.url }}">
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              
+              {%- when 'title' -%}
+                <h1 class="product__title" {{ block.shopify_attributes }}>
+                  {{ product.title }}
+                </h1>
+
+              {%- when 'price' -%}
+                <div class="product__price" id="price-{{ section.id }}" data-variant-price {{ block.shopify_attributes }}>
+                  {% render 'price', 
+                    product: product, 
+                    use_variant: true, 
+                    show_badges: true, 
+                    price_class: 'product__price-current' %}
+                </div>
+
+              {%- when 'variant_picker' -%}
+                {%- unless product.has_only_default_variant -%}
+
+Y                  <div class="product-form__input" {{ block.shopify_attributes }}>
+                    {% render 'product-variant-picker', 
+                      product: product, 
+                      block: block, 
+                      product_form_id: product_form_id %}
+                  </div>
+                {%- endunless -%}
+
+              {%- when 'quantity_selector' -%}
+                <div class="product-form__input product-form__input--quantity" {{ block.shopify_attributes }}>
+                  <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
+                    <label class="quantity__label form__label" for="Quantity-{{ section.id }}">
+                      {{ 'products.product.quantity.label' | t }}
+                    </label>
+                    
+                    <div class="quantity__wrapper">
+                      <button 
+                        class="quantity__button quantity__button--minus no-js-hidden" 
+                        name="minus" 
+                        type="button"
+                        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">
+                        <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+                        <svg aria-hidden="true" focusable="false" class="icon icon-minus" viewBox="0 0 10 2">
+                          <path d="m1 1h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                      
+                      <input 
+                        class="quantity__input"
+                        type="number"
+                        name="quantity"
+                        id="Quantity-{{ section.id }}"
+                        min="1"
+                        value="1"
+                        form="{{ product_form_id }}"
+                        aria-live="polite"
+                        data-quantity-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                      
+                      <button 
+                        class="quantity__button quantity__button--plus no-js-hidden" 
+                        name="plus" 
+                        type="button"
+                        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">
+                        <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+                        <svg aria-hidden="true" focusable="false" class="icon icon-plus" viewBox="0 0 10 10">
+                          <path d="m1 5h8m-4-4v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </quantity-input>
+                </div>
+
+              {%- when 'buy_buttons' -%}
+                <div class="product-form__buttons" {{ block.shopify_attributes }}>
+                  <button
+                    id="ProductSubmitButton-{{ section.id }}"
+                    type="submit"
+                    name="add"
+                    class="product-form__cart-submit button button--full-width button--primary"
+                    data-add-to-cart-button
+                    form="{{ product_form_id }}"
+                    {% if product.selected_or_first_available_variant.available == false %}disabled aria-disabled="true"{% endif %}>
+                    
+                    <span class="btn__text">
+                      {%- if product.selected_or_first_available_variant.available -%}
+                        {{ 'products.product.add_to_cart' | t }}
+                      {%- else -%}
+                        {{ 'products.product.sold_out' | t }}
+                      {%- endif -%}
+                    </span>
+                    
+                    <div class="loading-overlay__spinner hidden">
+                      <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                      </svg>
+                    </div>
+                  </button>
+
+                  {%- if block.settings.show_dynamic_checkout -%}
+                    {{ form | payment_button }}
+                  {%- endif -%}
+                </div>
+
+              {%- when 'description' -%}
+                {%- if product.description != blank -%}
+                  <div class="product__description rte" {{ block.shopify_attributes }}>
+                    {{ product.description }}
+                  </div>
+                {%- endif -%}
+
+            {%- endcase -%}
+          {%- endfor -%}
+
+          {%- comment -%} Enhanced Error Handling {%- endcomment -%}
+          <div class="product-form__error-message-wrapper" role="alert" hidden>
+            <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
+              <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+              <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+              <path d="m5.87413 3.52832c0-0.399478 0.318641-0.727089 0.718956-0.727089s0.718956 0.327611 0.718956 0.727089z" fill="white"/>
+              <path d="m5.51535 4.73193c0-0.516077 0.244259-0.544698 0.747126-0.544698 0.502867 0 0.747126 0.028621 0.747126 0.544698l0 6.18897c0 0.516077-0.244259 0.544698-0.747126 0.544698-0.502867 0-0.747126-0.028621-0.747126-0.544698z" fill="white"/>
+            </svg>
+            <span class="product-form__error-message"></span>
+          </div>
+
+        </product-form>
+      </form>
+
+      {%- comment -%} Enhanced Custom Info for Development {%- endcomment -%}
+      {%- if product.tags contains 'custom-variant-picker' -%}
+        <div class="product__custom-info">
+          <p><em>This product uses the enhanced variant picker system for better accessibility and user experience.</em></p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</article>
+
+{%- comment -%} Enhanced Product JSON Data for Variant Picker {%- endcomment -%}
+<script type="application/json" id="ProductJSON-{{ section.id }}">
+  {{ product | json }}
+</script>
+
+<script type="application/json" id="ProductVariants-{{ section.id }}">
+  [
+    {%- for variant in product.variants -%}
+      {
+        "id": {{ variant.id }},
+        "title": {{ variant.title | json }},
+        "option1": {{ variant.option1 | json }},
+        "option2": {{ variant.option2 | json }},
+        "option3": {{ variant.option3 | json }},
+        "sku": {{ variant.sku | json }},
+        "requires_shipping": {{ variant.requires_shipping }},
+        "taxable": {{ variant.taxable }},
+        "featured_image": {
+          {%- if variant.featured_image -%}
+            "id": {{ variant.featured_image.id }},
+            "product_id": {{ variant.featured_image.product_id }},
+            "position": {{ variant.featured_image.position }},
+            "created_at": {{ variant.featured_image.created_at | json }},
+            "updated_at": {{ variant.featured_image.updated_at | json }},
+            "alt": {{ variant.featured_image.alt | json }},
+            "width": {{ variant.featured_image.width }},
+            "height": {{ variant.featured_image.height }},
+            "src": {{ variant.featured_image | image_url: width: 800 | json }},
+            "url": {{ variant.featured_image | image_url: width: 800 | json }}
+          {%- else -%}
+            null
+          {%- endif -%}
+        },
+        "available": {{ variant.available }},
+        "name": {{ variant.name | json }},
+        "public_title": {{ variant.public_title | json }},
+        "options": [
+          {%- for option in variant.options -%}
+            {{ option | json }}{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ],
+        "price": {{ variant.price }},
+        "formatted_price": {{ variant.price | money | json }},
+        "weight": {{ variant.weight }},
+        "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+        "formatted_compare_at_price": {%- if variant.compare_at_price -%}{{ variant.compare_at_price | money | json }}{%- else -%}null{%- endif -%},
+        "inventory_management": {{ variant.inventory_management | json }},
+        "inventory_policy": {{ variant.inventory_policy | json }},
+        "inventory_quantity": {{ variant.inventory_quantity }},
+        "url": {{ product.url | append: '?variant=' | append: variant.id | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+</script>
+
+<script type="application/json" id="ProductMedia-{{ section.id }}">
+  [
+    {%- for media in product.media -%}
+      {
+        "alt": {{ media.alt | json }},
+        "id": {{ media.id }},
+        "position": {{ media.position }},
+        "preview_image": {
+          "aspect_ratio": {{ media.preview_image.aspect_ratio }},
+          "height": {{ media.preview_image.height }},
+          "width": {{ media.preview_image.width }},
+          "src": {{ media.preview_image | image_url: width: 800 | json }}
+        },
+        "aspect_ratio": {{ media.aspect_ratio }},
+        "height": {{ media.height }},
+        "media_type": {{ media.media_type | json }},
+        "src": {{ media | image_url: width: 800 | json }},
+        "width": {{ media.width }},
+        "variant_ids": {{ media.variant_ids | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+</script>
+
+{%- comment -%} Load Enhanced Product Form JavaScript {%- endcomment -%}
+<script>
+  // Enhanced product form configuration for variant picker integration
+  window.productFormConfig = window.productFormConfig || {};
+  window.productFormConfig['{{ section.id }}'] = {
+    product: {
+      id: {{ product.id }},
+      title: {{ product.title | json }},
+      handle: {{ product.handle | json }},
+      url: {{ product.url | json }},
+      type: {{ product.type | json }},
+      vendor: {{ product.vendor | json }}
+    },
+    section: {
+      id: {{ section.id | json }},
+      hideErrors: {{ section.settings.hide_errors }},
+      updateUrl: {{ settings.update_url_on_variant_change | default: true }}
+    },
+    variant: {
+      current: {{ product.selected_or_first_available_variant | json }},
+      enableImages: {{ settings.enable_variant_images | default: true }},
+      enablePricing: {{ settings.enable_dynamic_pricing | default: true }},
+      showAvailability: {{ settings.show_variant_availability | default: true }}
+    }
+  };
+
+  // Dispatch configuration ready event
+  document.dispatchEvent(new CustomEvent('product-form:config-ready', {
+    detail: {
+      sectionId: {{ section.id | json }},
+      config: window.productFormConfig['{{ section.id }}']
+    }
+  }));
+</script>
+
+{% schema %}
+{
+  "name": "Product form",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "hide_errors",
+      "default": false,
+      "label": "Hide form errors",
+      "info": "Hide error messages for better user experience"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_form",
+      "default": false,
+      "label": "Enable sticky product form",
+      "info": "Keep the form visible when scrolling on mobile"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Product title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "picker_type",
+          "options": [
+            {"value": "dropdown", "label": "Dropdown"},
+            {"value": "button", "label": "Button"},
+            {"value": "swatch", "label": "Color swatch"}
+          ],
+          "default": "dropdown",
+          "label": "Picker type"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_variant_images",
+          "default": true,
+          "label": "Enable variant images"
+        }
+      ]
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity selector",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_quantity_rules",
+          "default": false,
+          "label": "Enable quantity rules",
+          "info": "Restrict quantity based on inventory"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": true,
+          "label": "Show dynamic checkout buttons",
+          "info": "Enables payment buttons like Apple Pay, Google Pay"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pickup_availability",
+          "default": true,
+          "label": "Show pickup availability",
+          "info": "Show store pickup options if available"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_collapsible_description",
+          "default": false,
+          "label": "Make description collapsible",
+          "info": "Useful for long product descriptions"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "title"
+      },
+      {
+        "type": "price"
+      },
+      {
+        "type": "variant_picker"
+      },
+      {
+        "type": "quantity_selector"
+      },
+      {
+        "type": "buy_buttons"
+      },
+      {
+        "type": "description"
+      }
+    ]
+  }
+}
+{% endschema %}
+
+/**
+ * Enhanced Product Form Handler
+ * Integrates with variant picker and handles cart submissions
+ */
+
+if (!customElements.get('product-form')) {
+  customElements.define('product-form', class ProductForm extends HTMLElement {
+    constructor() {
+      super();
+
+      this.form = this.querySelector('form');
+      this.form.querySelector('[name=id]').disabled = false;
+      this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+      this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+      this.submitButton = this.querySelector('[type="submit"]');
+      this.submitButtonText = this.submitButton.querySelector('.btn__text');
+      this.errorMessageWrapper = this.querySelector('.product-form__error-message-wrapper');
+
+      // Enhanced variant change listening
+      this.addEventListener('variant:changed', this.onVariantChange.bind(this));
+    }
+
+    onSubmitHandler(evt) {
+      evt.preventDefault();
+      
+      if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
+
+      this.handleErrorMessage();
+
+      this.submitButton.setAttribute('aria-disabled', true);
+      this.submitButton.classList.add('loading');
+      this.querySelector('.loading-overlay__spinner').classList.remove('hidden');
+
+      const config = fetchConfig('javascript');
+      config.headers['X-Requested-With'] = 'XMLHttpRequest';
+      delete config.headers['Content-Type'];
+
+      const formData = new FormData(this.form);
+      if (this.cart) {
+        formData.append('sections', this.cart.getSectionsToRender().map((section) => section.id));
+        formData.append('sections_url', window.location.pathname);
+        config.body = formData;
+      }
+
+      fetch(`${routes.cart_add_url}`, config)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.status) {
+            this.handleErrorMessage(response.description);
+
+            const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+            if (!soldOutMessage) return;
+            this.submitButton.setAttribute('aria-disabled', true);
+            this.submitButton.querySelector('span').classList.add('hidden');
+            soldOutMessage.classList.remove('hidden');
+            this.error = true;
+            return;
+          } else if (!this.cart) {
+            window.location = window.routes.cart_url;
+            return;
+          }
+
+          this.error = false;
+          const quickAddModal = this.closest('quick-add-modal');
+          if (quickAddModal) {
+            document.body.addEventListener('modalClosed', () => {
+              setTimeout(() => { this.cart.renderContents(response) });
+            }, { once: true });
+            quickAddModal.hide(true);
+          } else {
+            this.cart.renderContents(response);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {
+          this.submitButton.classList.remove('loading');
+          if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+          if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+          this.querySelector('.loading-overlay__spinner').classList.add('hidden');
+        });
+    }
+
+    handleErrorMessage(errorMessage = false) {
+      if (this.hideErrors) return;
+
+      this.errorMessageWrapper = this.errorMessageWrapper || this.querySelector('.product-form__error-message-wrapper');
+      if (!this.errorMessageWrapper) return;
+      this.errorMessage = this.errorMessage || this.errorMessageWrapper.querySelector('.product-form__error-message');
+
+      this.errorMessageWrapper.toggleAttribute('hidden', !errorMessage);
+
+      if (errorMessage) {
+        this.errorMessage.textContent = errorMessage;
+      }
+    }
+
+    onVariantChange(event) {
+      const variant = event.detail.variant;
+      this.updateOptions();
+      this.updateMasterIdInput();
+      this.toggleAddButton(!variant, window.variantStrings.soldOut);
+      this.updatePickupAvailability();
+      this.updatePrice();
+      this.updateMedia();
+
+      if (!variant) {
+        this.toggleAddButton(true, '');
+        this.setUnavailable();
+      } else {
+        this.updateMedia();
+        this.updateURL();
+        this.updateVariantInput();
+        this.renderProductInfo();
+        this.updateShareUrl();
+      }
+    }
+
+    updateOptions() {
+      const fieldsets = Array.from(this.querySelectorAll('.js-variant-fieldset'));
+      this.options = fieldsets.map((fieldset) => {
+        return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked).value;
+      });
+    }
+
+    updateMasterIdInput() {
+      const currentVariantInput = this.form.querySelector('input[name="id"]');
+      const variant = this.currentVariant;
+
+      if (variant) {
+        currentVariantInput.value = variant.id;
+        currentVariantInput.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        currentVariantInput.value = '';
+      }
+    }
+
+    updatePrice() {
+      const priceElements = document.querySelectorAll('[data-variant-price]');
+      const variant = this.currentVariant;
+
+      if (!variant || priceElements.length === 0) return;
+
+      const price = variant.price;
+      const compareAtPrice = variant.compare_at_price;
+
+      priceElements.forEach(element => {
+        if (compareAtPrice && compareAtPrice > price) {
+          element.innerHTML = `
+            <span class="price--on-sale">${formatMoney(price)}</span>
+            <span class="price--compare">${formatMoney(compareAtPrice)}</span>
+          `;
+          element.classList.add('price--on-sale');
+        } else {
+          element.innerHTML = `<span class="price--regular">${formatMoney(price)}</span>`;
+          element.classList.remove('price--on-sale');
+        }
+      });
+    }
+
+    updateMedia() {
+      if (!this.currentVariant) return;
+      if (!this.currentVariant.featured_media) return;
+
+      const mediaGalleries = document.querySelectorAll('[id^="MediaGallery-"]');
+      mediaGalleries.forEach((mediaGallery) =>
+        mediaGallery.setActiveMedia(`${this.dataset.section}-${this.currentVariant.featured_media.id}`, true)
+      );
+
+      const modalContent = document.querySelector(`#ProductModal-${this.dataset.section} .product-media-modal__content`);
+      if (!modalContent) return;
+      const newMediaModal = modalContent.querySelector( `[data-media-id="${this.currentVariant.featured_media.id}"]`);
+      modalContent.prepend(newMediaModal);
+    }
+
+    setUnavailable() {
+      const button = document.getElementById(`ProductSubmitButton-${this.dataset.section ?? ''}`);
+      if (!button) return;
+      button.textContent = window.variantStrings.unavailable;
+      document.dispatchEvent(new CustomEvent('variant:unavailable', {
+        detail: {
+          source: 'product-form',
+          productUrl: this.dataset.productUrl,
+          variantId: this.currentVariant?.id,
+        }
+      }));
+    }
+
+    toggleAddButton(disable = true, text, modifyClass = true) {
+      const productForm = document.getElementById(`product-form-${this.dataset.section}`);
+      if (!productForm) return;
+      const addButton = productForm.querySelector('[name="add"]');
+      const addButtonText = productForm.querySelector('[name="add"] .btn__text');
+
+      if (!addButton) return;
+
+      if (disable) {
+        addButton.setAttribute('disabled', 'disabled');
+        if (text) addButtonText.textContent = text;
+      } else {
+        addButton.removeAttribute('disabled');
+        addButtonText.textContent = window.variantStrings.addToCart;
+      }
+
+      if (!modifyClass) return;
+    }
+
+    updateVariantInput() {
+      const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`);
+      productForms.forEach((productForm) => {
+        const input = productForm.querySelector('input[name="id"]');
+        input.value = this.currentVariant.id;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+
+    updatePickupAvailability() {
+      const pickUpAvailability = document.querySelector('pickup-availability');
+      if (!pickUpAvailability) return;
+
+      if (this.currentVariant && this.currentVariant.available) {
+        pickUpAvailability.fetchAvailability(this.currentVariant.id);
+      } else {
+        pickUpAvailability.removeAttribute('available');
+        pickUpAvailability.innerHTML = '';
+      }
+    }
+
+    renderProductInfo() {
+      fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.originalSection || this.dataset.section}`)
+        .then((response) => response.text())
+        .then((responseText) => {
+          const html = new DOMParser().parseFromString(responseText, 'text/html')
+          const destination = document.getElementById(`price-${this.dataset.section}`);
+          const source = html.getElementById(`price-${this.dataset.originalSection || this.dataset.section}`);
+          const skuSource = html.getElementById(`Sku-${this.dataset.originalSection || this.dataset.section}`);
+          const skuDestination = document.getElementById(`Sku-${this.dataset.section}`);
+          const inventorySource = html.getElementById(`Inventory-${this.dataset.originalSection || this.dataset.section}`);
+          const inventoryDestination = document.getElementById(`Inventory-${this.dataset.section}`);
+
+          if (source && destination) destination.innerHTML = source.innerHTML;
+          if (inventorySource && inventoryDestination) inventoryDestination.innerHTML = inventorySource.innerHTML;
+          if (skuSource && skuDestination) {
+            skuDestination.innerHTML = skuSource.innerHTML;
+            skuDestination.classList.toggle('visibility-hidden', skuSource.classList.contains('visibility-hidden'));
+          }
+
+          const price = document.getElementById(`price-${this.dataset.section}`);
+
+          if (price) price.classList.remove('visibility-hidden');
+          this.toggleAddButton(!this.currentVariant.available, window.variantStrings.soldOut);
+        });
+    }
+
+    updateShareUrl() {
+      const shareButton = document.getElementById(`Share-${this.dataset.section}`);
+      if (!shareButton || !shareButton.updateUrl) return;
+      shareButton.updateUrl(`${window.shopUrl}${this.dataset.url}?variant=${this.currentVariant.id}`);
+    }
+
+    updateURL() {
+      if (!this.currentVariant || this.dataset.updateUrl === 'false') return;
+      window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    }
+
+    get currentVariant() {
+      return this.getVariantData().find((variant) => {
+        return !variant.options.map((option, index) => {
+          return this.options[index] === option;
+        }).includes(false);
+      });
+    }
+
+    getVariantData() {
+      this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+      return this.variantData;
+    }
+
+    get hideErrors() {
+      return this.dataset.hideErrors === 'true';
+    }
+  });
+}
+
+// Utility function for money formatting
+function formatMoney(cents) {
+  return window.Shopify.formatMoney(cents, window.moneyFormat);
+}
+
+// Utility function for fetch configuration
+function fetchConfig(type = 'json') {
+  return {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': `application/${type}` }
+  };
+}
