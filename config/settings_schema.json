@@ -1,21 +1,19 @@
 [
   {
-    "name": "theme_info",
-    "theme_name": "Enhanced Shopify Theme",
-    "theme_version": "1.0.0",
-    "theme_author": "Your Name",
-    "theme_documentation_url": "https://help.shopify.com/",
-    "theme_support_url": "https://support.shopify.com/",
-    "color_system": "200+ CSS color variables in assets/colors-emojis.css",
-    "emoji_support": "Emoji font and picker in Marquee section"
+    "name": "Theme info",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Enhanced Shopify Theme v1.0.0 by Your Name. For documentation, visit https://help.shopify.com/"
+      }
+    ]
   },
   {
     "name": "Theme settings",
     "settings": [
       {
-        "type": "color_schemes",
+        "type": "color_scheme",
         "id": "color_schemes",
-        "role": "color_schemes",
         "label": "Color Schemes"
       }
     ]
@@ -222,6 +220,35 @@
         "id": "favicon",
         "label": "Favicon image",
         "info": "Will be scaled down to 32 x 32px"
+      }
+    ]
+  },
+  {
+    "name": "Color Settings",
+    "settings": [
+      {
+        "type": "color",
+        "id": "pastel_pink",
+        "label": "Pastel Pink",
+        "default": "#ffd1dc"
+      },
+      {
+        "type": "color",
+        "id": "neon_green",
+        "label": "Neon Green",
+        "default": "#39ff14"
+      },
+      {
+        "type": "color",
+        "id": "pastel_blue",
+        "label": "Pastel Blue",
+        "default": "#a7c7e7"
+      },
+      {
+        "type": "color",
+        "id": "neon_purple",
+        "label": "Neon Purple",
+        "default": "#bc13fe"
       }
     ]
   }

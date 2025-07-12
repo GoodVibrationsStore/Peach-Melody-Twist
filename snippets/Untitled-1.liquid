@@ -1,1 +1,105 @@
-{%- comment -%} Moved from Untitled-1.css. Add your Liquid or HTML here. {%- endcomment -%}
+{%- comment -%}
+Animated CTA Card Snippet: Modern, glassmorphic, emoji/icon, gradient, and animated border.
+Usage: {% render 'animated-cta-card', title: 'Shop Now!', subtitle: 'Discover our latest arrivals', button_label: 'Browse', button_url: '/collections/all', emoji: '🛍️' %}
+{%- endcomment -%}
+
+{% assign cta_title = title | default: 'Shop Now!' %}
+{% assign cta_subtitle = subtitle | default: 'Discover our latest arrivals' %}
+{% assign cta_button_label = button_label | default: 'Browse' %}
+{% assign cta_button_url = button_url | default: '/collections/all' %}
+{% assign cta_emoji = emoji | default: '✨' %}
+
+<div class="animated-cta-card">
+  <div class="cta-emoji">{{ cta_emoji }}</div>
+  <div class="cta-title">{{ cta_title }}</div>
+  <div class="cta-subtitle">{{ cta_subtitle }}</div>
+  <a href="{{ cta_button_url }}" class="cta-btn" aria-label="{{ cta_button_label }}">{{ cta_button_label }}</a>
+</div>
+
+<style>
+.animated-cta-card {
+  --cta-gradient: linear-gradient(120deg, #a0e7e5 0%, #fcb900 100%);
+  --cta-glass: rgba(255,255,255,0.7);
+  --cta-border: linear-gradient(120deg, #fcb900 0%, #a0e7e5 100%);
+  background: var(--cta-gradient);
+  border-radius: 1.5em;
+  box-shadow: 0 4px 32px 0 #0002;
+  padding: 2.2em 1.5em 2em 1.5em;
+  max-width: 350px;
+  margin: 2em auto;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  animation: cta-fadein 1.1s cubic-bezier(.4,0,.2,1);
+}
+.animated-cta-card:before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 1.7em;
+  background: var(--cta-border);
+  z-index: 0;
+  opacity: 0.7;
+  animation: cta-border-anim 3s linear infinite;
+}
+.animated-cta-card > * {
+  position: relative;
+  z-index: 1;
+}
+.cta-emoji {
+  font-size: 2.5em;
+  margin-bottom: 0.3em;
+  animation: emoji-bounce 1.7s infinite cubic-bezier(.4,0,.2,1);
+}
+.cta-title {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+  color: #222;
+  text-shadow: 0 2px 8px #fff8;
+}
+.cta-subtitle {
+  font-size: 1.1em;
+  color: #444;
+  margin-bottom: 1.1em;
+  opacity: 0.85;
+}
+.cta-btn {
+  display: inline-block;
+  background: #fff;
+  color: #fcb900;
+  font-weight: 600;
+  border-radius: 2em;
+  padding: 0.7em 2.2em;
+  font-size: 1.1em;
+  text-decoration: none;
+  box-shadow: 0 2px 8px #fcb90033;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  border: none;
+}
+.cta-btn:hover, .cta-btn:focus {
+  background: #fcb900;
+  color: #fff;
+  box-shadow: 0 4px 16px #fcb90055;
+}
+@keyframes cta-fadein {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cta-border-anim {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+@keyframes emoji-bounce {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-0.25em) scale(1.15); }
+  40% { transform: translateY(0.1em) scale(0.95); }
+  60% { transform: translateY(-0.15em) scale(1.08); }
+  80% { transform: translateY(0); }
+}
+@media (max-width: 600px) {
+  .animated-cta-card { padding: 1.2em 0.5em 1.1em 0.5em; max-width: 98vw; }
+  .cta-title { font-size: 1.1em; }
+  .cta-emoji { font-size: 2em; }
+}
+</style>

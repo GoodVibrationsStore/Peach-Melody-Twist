@@ -1,0 +1,64 @@
+{%- comment -%}
+Color Mode Toggle: Light/Dark mode switcher, floating and accessible.
+Include in theme.liquid or main layout: {% render 'color-mode-toggle' %}
+{%- endcomment -%}
+
+<button id="colorModeToggle" class="color-mode-toggle" aria-label="Toggle color mode" tabindex="0">🌙</button>
+
+<style>
+.color-mode-toggle {
+  position: fixed;
+  left: 1.2em;
+  bottom: 1.2em;
+  z-index: 9999;
+  background: #fff;
+  color: #222;
+  border: none;
+  border-radius: 50%;
+  width: 3em; height: 3em;
+  font-size: 1.5em;
+  box-shadow: 0 2px 12px #0002;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  outline: none;
+}
+.color-mode-toggle:focus {
+  box-shadow: 0 0 0 3px #a0e7e5, 0 2px 12px #fcb90055;
+}
+.color-mode-toggle:hover {
+  background: #fcb900;
+  color: #fff;
+  transform: scale(1.08);
+}
+@media (max-width: 600px) {
+  .color-mode-toggle { left: 0.7em; bottom: 0.7em; width: 2.5em; height: 2.5em; font-size: 1.1em; }
+}
+:root[data-theme='dark'] {
+  --color-bg: #181a1b;
+  --color-text: #f3f3f3;
+  --color-accent: #fcb900;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+</style>
+<script>
+(function(){
+  var btn = document.getElementById('colorModeToggle');
+  if (!btn) return;
+  var dark = false;
+  function setTheme(darkMode) {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    btn.innerText = darkMode ? '☀️' : '🌙';
+    dark = darkMode;
+    localStorage.setItem('colorMode', darkMode ? 'dark' : 'light');
+  }
+  btn.addEventListener('click', function(){ setTheme(!dark); });
+  btn.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+  var saved = localStorage.getItem('colorMode');
+  if (saved) setTheme(saved === 'dark');
+})();
+</script>

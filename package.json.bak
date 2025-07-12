@@ -11,12 +11,13 @@
     "build": "shopify theme check",
     "deploy": "shopify theme push --development",
     "deploy:live": "shopify theme push --live",
-    "deploy:force": "shopify theme push --development --force",
     "pull": "shopify theme pull",
     "pull:live": "shopify theme pull --live",
     "check": "shopify theme check",
     "check:fix": "shopify theme check --auto-correct",
     "package": "shopify theme package",
+    "login": "shopify auth login",
+    "logout": "shopify auth logout",
     "console": "shopify theme console",
     "list": "shopify theme list",
     "open": "shopify theme open",
@@ -39,22 +40,13 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "@shopify/cli": "^3.82.0",
-    "@shopify/theme": "^3.82.0"
+    "@shopify/cli": "latest"
   },
   "dependencies": {},
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/your-username/shopify-theme-rep.git"
-  },
-  "bugs": {
-    "url": "https://github.com/your-username/shopify-theme-rep/issues"
-  },
-  "homepage": "https://github.com/your-username/shopify-theme-rep#readme",
   "shopify": {
     "theme": {
       "id": "development",

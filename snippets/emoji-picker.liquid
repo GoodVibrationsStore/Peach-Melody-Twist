@@ -1,34 +1,229 @@
 {%- comment -%}
-Emoji Picker integration using Emoji Button (CDN)
-Include this snippet where you want an emoji picker input (e.g., in a section or product form).
-- Add an input with class 'emoji-input' and a button with class 'emoji-picker-btn'.
-- This script will attach the emoji picker to the button and insert the selected emoji into the input.
+Enhanced Emoji Picker integration using Emoji Button (CDN)
+Features:
+- Theme toggle (light/dark/auto)
+- Emoji size option
+- Insert at cursor position
+- Accessibility improvements
+- Animated button feedback
+- Clear input option
+- Modern CSS polish
 {%- endcomment -%}
 
-<!-- Emoji Button CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@latest/dist/emoji-button.min.js" defer></script>
+<div class="emoji-picker-wrapper">
+  <input type="text" class="emoji-input" placeholder="Type or pick emoji" aria-label="Emoji input">
+  <button type="button" class="emoji-picker-btn" aria-label="Open emoji picker" tabindex="0">😀</button>
+  <button type="button" class="emoji-clear-btn" aria-label="Clear input" tabindex="0" style="display:none;">✖️</button>
+  <select class="emoji-theme-select" aria-label="Emoji picker theme">
+    <option value="auto">Auto</option>
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+  <select class="emoji-size-select" aria-label="Emoji size">
+    <option value="1">Normal</option>
+    <option value="1.5">Large</option>
+    <option value="2">Extra Large</option>
+  </select>
+</div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var trigger = document.querySelector('.emoji-picker-btn');
-  var input = document.querySelector('.emoji-input');
-  if (trigger && input && window.EmojiButton) {
+  if (!window.emojiPickerCDNLoaded) {
+    var script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@latest/dist/emoji-button.min.js";
+    script.async = true;
+    script.onload = function() {
+      if (typeof initEmojiPickers === 'function') {
+        initEmojiPickers();
+      }
+    };
+    document.head.appendChild(script);
+    window.emojiPickerCDNLoaded = true;
+  } else {
+    if (typeof initEmojiPickers === 'function') {
+      initEmojiPickers();
+    }
+  }
+</script>
+
+<script>
+function initEmojiPickers() {
+  if (typeof EmojiButton !== 'function') {
+    // EmojiButton library not loaded yet
+    return;
+  }
+  var wrappers = document.querySelectorAll('.emoji-picker-wrapper');
+  wrappers.forEach(function(wrapper) {
+    var input = wrapper.querySelector('.emoji-input');
+    var trigger = wrapper.querySelector('.emoji-picker-btn');
+    var clearBtn = wrapper.querySelector('.emoji-clear-btn');
+    var themeSelect = wrapper.querySelector('.emoji-theme-select');
+    var sizeSelect = wrapper.querySelector('.emoji-size-select');
+    if (!trigger || !input) return;
+    if (trigger._emojiPickerInitialized) return;
+    trigger._emojiPickerInitialized = true;
+
+    // Picker instance
     var picker = new EmojiButton({
       position: 'bottom-start',
       autoHide: false,
       showSearch: true,
       showRecents: true,
-      theme: 'auto',
+      theme: themeSelect ? themeSelect.value : 'auto',
+      emojiSize: parseFloat(sizeSelect ? sizeSelect.value : '1') * 24
     });
+
+    // Insert emoji at cursor position
     picker.on('emoji', function(emoji) {
-      input.value += emoji;
-      input.dispatchEvent(new Event('input'));
+      var start = input.selectionStart;
+      var end = input.selectionEnd;
+      var value = input.value;
+      input.value = value.substring(0, start) + emoji + value.substring(end);
+      input.focus();
+      input.setSelectionRange(start + emoji.length, start + emoji.length);
+      // Cross-browser input event
+      var event;
+      try {
+        event = new Event('input', { bubbles: true });
+      } catch (e) {
+        event = document.createEvent('Event');
+        event.initEvent('input', true, true);
+      }
+      input.dispatchEvent(event);
+      clearBtn.style.display = input.value ? '' : 'none';
     });
-    trigger.addEventListener('click', function() {
-      picker.togglePicker(trigger);
+
+    trigger.addEventListener('click', function(event) {
+      // Button animation
+      trigger.classList.add('emoji-btn-active');
+      setTimeout(function() { trigger.classList.remove('emoji-btn-active'); }, 150);
+      // Close all other pickers before opening this one
+      document.querySelectorAll('.emoji-picker-btn').forEach(function(btn) {
+        if (btn !== trigger && btn._emojiPickerInstance && typeof btn._emojiPickerInstance.hide === 'function') {
+          btn._emojiPickerInstance.hide();
+        }
+      });
+      picker.toggle(trigger);
     });
+    // Store picker instance for closing later
+    trigger._emojiPickerInstance = picker;
+
+    // Theme and size controls
+    if (themeSelect) {
+      themeSelect.addEventListener('change', function() {
+        picker.setTheme(themeSelect.value);
+      });
+    }
+    if (sizeSelect) {
+      sizeSelect.addEventListener('change', function() {
+        picker.options.emojiSize = parseFloat(sizeSelect.value) * 24;
+        picker.hide();
+      });
+    }
+
+    // Clear input button
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        clearBtn.style.display = 'none';
+        input.focus();
+        var event;
+        try {
+          event = new Event('input', { bubbles: true });
+        } catch (e) {
+          event = document.createEvent('Event');
+          event.initEvent('input', true, true);
+        }
+        input.dispatchEvent(event);
+      });
+    }
+    // Show/hide clear button
+    input.addEventListener('input', function() {
+      clearBtn.style.display = input.value ? '' : 'none';
+    });
+    // Accessibility: open picker with Enter/Space
+    trigger.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        trigger.click();
+      }
+    });
+    // Accessibility: focus input on wrapper click
+    wrapper.addEventListener('click', function(e) {
+      if (e.target === wrapper) input.focus();
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  function waitForEmojiButton() {
+    if (typeof EmojiButton === 'function') {
+      initEmojiPickers();
+    } else {
+      setTimeout(waitForEmojiButton, 50);
+    }
   }
+  waitForEmojiButton();
 });
 </script>
 
-<input type="text" class="emoji-input" placeholder="Type or pick emoji">
-<button type="button" class="emoji-picker-btn">😀</button>
+<style>
+.emoji-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  background: #f8f8fa;
+  border-radius: 8px;
+  padding: 0.5em 0.75em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  position: relative;
+  max-width: 350px;
+}
+.emoji-input {
+  flex: 1 1 auto;
+  font-size: 1.2em;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0.25em 0.5em;
+}
+.emoji-picker-btn, .emoji-clear-btn {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  border-radius: 50%;
+  outline: none;
+}
+.emoji-picker-btn:focus, .emoji-clear-btn:focus {
+  box-shadow: 0 0 0 2px #a0e7e5;
+}
+.emoji-picker-btn.emoji-btn-active {
+  transform: scale(1.2) rotate(-10deg);
+  box-shadow: 0 2px 8px #fcb90044;
+}
+.emoji-clear-btn {
+  color: #e57373;
+  font-size: 1.2em;
+  margin-left: -0.25em;
+}
+.emoji-theme-select, .emoji-size-select {
+  font-size: 0.95em;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  margin-left: 0.25em;
+  padding: 0.1em 0.4em;
+}
+@media (max-width: 500px) {
+  .emoji-picker-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 100%;
+  }
+  .emoji-theme-select, .emoji-size-select {
+    margin-left: 0;
+    margin-top: 0.25em;
+  }
+}
+</style>

@@ -1,0 +1,100 @@
+{%- comment -%} 
+  Animated Back to Top Button: Floating, modern, and accessible.
+  Include in theme.liquid or main layout: {% render 'back-to-top' %} 
+{%- endcomment -%}
+
+<button
+  id="backToTopBtn"
+  class="back-to-top-btn"
+  aria-label="Back to top"
+  tabindex="0">⬆️</button>
+<div
+  id="backToTopLive"
+  class="visually-hidden"
+  aria-live="polite"></div>
+
+<style>
+  .back-to-top-btn {
+    position: fixed;
+    right: 1.2em;
+    bottom: 1.2em;
+    z-index: 9999;
+    background: linear-gradient(120deg, #fcb900 0%, #a0e7e5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 3em;
+    height: 3em;
+    font-size: 1.5em;
+    box-shadow: 0 2px 12px #0002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s
+    , transform 0.2s;
+    transform: scale(0.9);
+    outline: none;
+  }
+  .back-to-top-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+  .back-to-top-btn:focus {
+    box-shadow: 0 0 0 3px #a0e7e5
+    , 0 2px 12px #fcb90055;
+  }
+  .back-to-top-btn:hover {
+    background: #222;
+    color: #fff;
+  }
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  @media (max-width: 600px) {
+    .back-to-top-btn {
+      right: 0.7em;
+      bottom: 0.7em;
+      width: 2.5em;
+      height: 2.5em;
+      font-size: 1.1em;
+    }
+  }
+</style>
+<script>
+  (function(){
+  var btn = document.getElementById('backToTopBtn');
+  var liveRegion = document.getElementById('backToTopLive');
+  var lastVisible = false;
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    var visible = window.scrollY > 300;
+    if (visible) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+    // Accessibility: Announce when button appears/disappears
+    if (liveRegion && visible !== lastVisible) {
+      liveRegion.textContent = visible ? 'Back to top button available' : '';
+      lastVisible = visible;
+    }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  btn.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+  })();
+</script>

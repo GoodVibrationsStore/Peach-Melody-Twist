@@ -28,7 +28,6 @@
   --color-brand-dark: #1f2937;
   --color-brand-success: #10b981;
   --color-brand-warning: #f59e42;
-  /* Pastel, metallic, seasonal, etc. */
   /* Pastel Colors */
   --pastel-pink: #ffd1dc;
   --pastel-blue: #aec6cf;
@@ -54,8 +53,8 @@
   --neon-magenta: #ff00c8;
 }
 
-/* Emoji font support */
-.emoji {
+/* Emoji font support - use .emoji-font for consistency */
+.emoji-font, .emoji {
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
 }
 
@@ -77,6 +76,11 @@
   border: none;
   background-color: transparent;
   cursor: pointer;
+  outline: 2px solid transparent;
+  transition: outline 0.2s;
+}
+.emoji-picker-btn:focus {
+  outline: 2px solid var(--color-brand-primary);
 }
 
 /* Rendered emoji picker styles */

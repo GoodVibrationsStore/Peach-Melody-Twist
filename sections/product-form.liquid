@@ -25,7 +25,6 @@
   <div class="product__info">
     <div class="product__info-wrapper">
       {%- assign product_form_id = 'product-form-' | append: section.id -%}
-      
       <form 
         action="{{ routes.cart_add_url }}" 
         method="post" 
@@ -34,9 +33,9 @@
         class="form"
         novalidate="novalidate"
         data-type="add-to-cart-form">
-        
+
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
-        
+
         <product-form 
           class="product-form" 
           data-hide-errors="{{ section.settings.hide_errors }}" 
@@ -46,7 +45,6 @@
 
           {%- for block in section.blocks -%}
             {%- case block.type -%}
-              
               {%- when 'title' -%}
                 <h1 class="product__title" {{ block.shopify_attributes }}>
                   {{ product.title }}
@@ -54,43 +52,51 @@
 
               {%- when 'price' -%}
                 <div class="product__price" id="price-{{ section.id }}" data-variant-price {{ block.shopify_attributes }}>
-                  {% render 'price', 
-                    product: product, 
-                    use_variant: true, 
-                    show_badges: true, 
-                    price_class: 'product__price-current' %}
+                  {%- assign variant = product.selected_or_first_available_variant -%}
+                  <span class="product__price-current">
+                    {{ variant.price | money }}
+                  </span>
+                  {%- if variant.compare_at_price > variant.price -%}
+                    <span class="product__price-compare">
+                      {{ variant.compare_at_price | money }}
+                    </span>
+                  {%- endif -%}
+                  {%- if variant.available == false -%}
+                    <span class="product__price-badge product__price-badge--sold-out">
+                      {{ 'products.product.sold_out' | t }}
+                    </span>
+                  {%- endif -%}
                 </div>
 
               {%- when 'variant_picker' -%}
-                {%- unless product.has_only_default_variant -%}
-
-Y                  <div class="product-form__input" {{ block.shopify_attributes }}>
+                {%- if product.variants.size > 1 -%}
+                  <div class="product-form__input" {{ block.shopify_attributes }}>
                     {% render 'product-variant-picker', 
                       product: product, 
                       block: block, 
                       product_form_id: product_form_id %}
                   </div>
-                {%- endunless -%}
+                {%- else -%}
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}" form="{{ product_form_id }}">
+                {%- endif -%}
 
               {%- when 'quantity_selector' -%}
                 <div class="product-form__input product-form__input--quantity" {{ block.shopify_attributes }}>
                   <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
                     <label class="quantity__label form__label" for="Quantity-{{ section.id }}">
-                      {{ 'products.product.quantity.label' | t }}
+                      Quantity
                     </label>
-                    
                     <div class="quantity__wrapper">
                       <button 
                         class="quantity__button quantity__button--minus no-js-hidden" 
                         name="minus" 
                         type="button"
-                        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">
-                        <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+                        aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | default: 'Decrease quantity for ' | append: product.title | escape }}">
+                        <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | default: 'Decrease quantity for ' | append: product.title | escape }}</span>
                         <svg aria-hidden="true" focusable="false" class="icon icon-minus" viewBox="0 0 10 2">
                           <path d="m1 1h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                         </svg>
                       </button>
-                      
                       <input 
                         class="quantity__input"
                         type="number"
@@ -101,13 +107,12 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
                         form="{{ product_form_id }}"
                         aria-live="polite"
                         data-quantity-variant-id="{{ product.selected_or_first_available_variant.id }}">
-                      
                       <button 
                         class="quantity__button quantity__button--plus no-js-hidden" 
                         name="plus" 
                         type="button"
-                        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">
-                        <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+                        aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | default: 'Increase quantity for ' | append: product.title | escape }}">
+                        <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | default: 'Increase quantity for ' | append: product.title | escape }}</span>
                         <svg aria-hidden="true" focusable="false" class="icon icon-plus" viewBox="0 0 10 10">
                           <path d="m1 5h8m-4-4v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                         </svg>
@@ -126,7 +131,6 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
                     data-add-to-cart-button
                     form="{{ product_form_id }}"
                     {% if product.selected_or_first_available_variant.available == false %}disabled aria-disabled="true"{% endif %}>
-                    
                     <span class="btn__text">
                       {%- if product.selected_or_first_available_variant.available -%}
                         {{ 'products.product.add_to_cart' | t }}
@@ -134,14 +138,12 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
                         {{ 'products.product.sold_out' | t }}
                       {%- endif -%}
                     </span>
-                    
                     <div class="loading-overlay__spinner hidden">
                       <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
                         <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
                       </svg>
                     </div>
                   </button>
-
                   {%- if block.settings.show_dynamic_checkout -%}
                     {{ form | payment_button }}
                   {%- endif -%}
@@ -153,11 +155,9 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
                     {{ product.description }}
                   </div>
                 {%- endif -%}
-
             {%- endcase -%}
           {%- endfor -%}
 
-          {%- comment -%} Enhanced Error Handling {%- endcomment -%}
           <div class="product-form__error-message-wrapper" role="alert" hidden>
             <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
               <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
@@ -167,11 +167,9 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
             </svg>
             <span class="product-form__error-message"></span>
           </div>
-
         </product-form>
       </form>
 
-      {%- comment -%} Enhanced Custom Info for Development {%- endcomment -%}
       {%- if product.tags contains 'custom-variant-picker' -%}
         <div class="product__custom-info">
           <p><em>This product uses the enhanced variant picker system for better accessibility and user experience.</em></p>
@@ -307,122 +305,24 @@ Y                  <div class="product-form__input" {{ block.shopify_attributes 
       "default": false,
       "label": "Hide form errors",
       "info": "Hide error messages for better user experience"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_sticky_form",
-      "default": false,
-      "label": "Enable sticky product form",
-      "info": "Keep the form visible when scrolling on mobile"
     }
   ],
   "blocks": [
-    {
-      "type": "title",
-      "name": "Product title",
-      "limit": 1
-    },
-    {
-      "type": "price",
-      "name": "Price",
-      "limit": 1
-    },
-    {
-      "type": "variant_picker",
-      "name": "Variant picker",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "select",
-          "id": "picker_type",
-          "options": [
-            {"value": "dropdown", "label": "Dropdown"},
-            {"value": "button", "label": "Button"},
-            {"value": "swatch", "label": "Color swatch"}
-          ],
-          "default": "dropdown",
-          "label": "Picker type"
-        },
-        {
-          "type": "checkbox",
-          "id": "enable_variant_images",
-          "default": true,
-          "label": "Enable variant images"
-        }
-      ]
-    },
-    {
-      "type": "quantity_selector",
-      "name": "Quantity selector",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "checkbox",
-          "id": "enable_quantity_rules",
-          "default": false,
-          "label": "Enable quantity rules",
-          "info": "Restrict quantity based on inventory"
-        }
-      ]
-    },
-    {
-      "type": "buy_buttons",
-      "name": "Buy buttons",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "checkbox",
-          "id": "show_dynamic_checkout",
-          "default": true,
-          "label": "Show dynamic checkout buttons",
-          "info": "Enables payment buttons like Apple Pay, Google Pay"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_pickup_availability",
-          "default": true,
-          "label": "Show pickup availability",
-          "info": "Show store pickup options if available"
-        }
-      ]
-    },
-    {
-      "type": "description",
-      "name": "Product description",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "checkbox",
-          "id": "enable_collapsible_description",
-          "default": false,
-          "label": "Make description collapsible",
-          "info": "Useful for long product descriptions"
-        }
-      ]
-    }
+    { "type": "title", "name": "Product title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
+    { "type": "quantity_selector", "name": "Quantity selector", "limit": 1 },
+    { "type": "buy_buttons", "name": "Buy buttons", "limit": 1 },
+    { "type": "description", "name": "Product description", "limit": 1 }
   ],
-  "default": {
-    "blocks": [
-      {
-        "type": "title"
-      },
-      {
-        "type": "price"
-      },
-      {
-        "type": "variant_picker"
-      },
-      {
-        "type": "quantity_selector"
-      },
-      {
-        "type": "buy_buttons"
-      },
-      {
-        "type": "description"
-      }
-    ]
-  }
+  "default": [
+    { "type": "title" },
+    { "type": "price" },
+    { "type": "variant_picker" },
+    { "type": "quantity_selector" },
+    { "type": "buy_buttons" },
+    { "type": "description" }
+  ]
 }
 {% endschema %}
 
@@ -504,7 +404,7 @@ if (!customElements.get('product-form')) {
         })
         .finally(() => {
           this.submitButton.classList.remove('loading');
-          if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
+          if this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
           if (!this.error) this.submitButton.removeAttribute('aria-disabled');
           this.querySelector('.loading-overlay__spinner').classList.add('hidden');
         });

@@ -1,60 +1,39 @@
-# Enhanced Shopify Theme - Enhanced Variant Picker System
-
-# Dependencies
+# Node modules and dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Shopify CLI
-.shopify/
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Python virtual environments (cleaned up)
-.venv/
-venv/
-ENV/
-env/
-.python-version
-requirements.txt
-Pipfile
-Pipfile.lock
-__pycache__/
-*.pyc
-.pytest_cache/
-
 # OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Editor directories and files
-.vscode/settings.json
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# VS Code settings
+.vscode/
 
-# Logs
-logs
-*.log
+# Shopify CLI and theme files
+.shopify/
+.shopify-cli.yml
 
-# Build directories
+# Build artifacts
 dist/
 build/
+*.zip
 
-# Temporary files
-.tmp/
-temp/
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# Mac system files
+Icon?
+
+# SASS/SCSS cache
+.sass-cache/
+
+# Ignore local custom Copilot instructions
+.github/copilot-instructions.md

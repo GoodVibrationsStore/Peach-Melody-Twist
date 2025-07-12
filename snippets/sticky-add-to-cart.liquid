@@ -1,0 +1,117 @@
+{%- comment -%}
+Sticky Add-to-Cart Bar: Boosts conversions, always visible on product pages (mobile & desktop).
+Include in product template: {% render 'sticky-add-to-cart' %}
+{%- endcomment -%}
+
+{% if product and product.available %}
+<div class="sticky-atc-bar" id="sticky-atc-bar">
+  <div class="sticky-atc-inner">
+    <div class="sticky-atc-img">
+      {% if product.featured_image %}
+        <img src="{{ product.featured_image | image_url: width: 80, height: 80, crop: 'center' }}" alt="{{ product.title }}" width="40" height="40" loading="lazy">
+      {% endif %}
+    </div>
+    <div class="sticky-atc-info">
+      <div class="sticky-atc-title">{{ product.title }}</div>
+      {% if product.selected_or_first_available_variant.price %}
+        <div class="sticky-atc-price">{{ product.selected_or_first_available_variant.price | money }}</div>
+      {% endif %}
+    </div>
+    <form method="post" action="{{ routes.cart_add_url }}" class="sticky-atc-form">
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <button type="submit" class="sticky-atc-btn">Add to Cart</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<style>
+.sticky-atc-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, #fff 60%, #fcb900 100%);
+  box-shadow: 0 -2px 16px #0002;
+  z-index: 1000;
+  padding: 0.5em 0.7em;
+  display: none;
+  align-items: center;
+  animation: sticky-atc-fadein 0.7s cubic-bezier(.4,0,.2,1);
+}
+.sticky-atc-inner {
+  display: flex;
+  align-items: center;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+.sticky-atc-img img {
+  border-radius: 8px;
+  width: 40px; height: 40px;
+  margin-right: 0.7em;
+  box-shadow: 0 2px 8px #0001;
+}
+.sticky-atc-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sticky-atc-title {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticky-atc-price {
+  color: #fcb900;
+  font-weight: 500;
+  font-size: 1em;
+}
+.sticky-atc-form {
+  margin-left: 1em;
+}
+.sticky-atc-btn {
+  background: #fcb900;
+  color: #fff;
+  border: none;
+  border-radius: 2em;
+  padding: 0.6em 1.7em;
+  font-size: 1.1em;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #fcb90033;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.sticky-atc-btn:hover, .sticky-atc-btn:focus {
+  background: #222;
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .sticky-atc-inner { max-width: 99vw; }
+  .sticky-atc-title { font-size: 1em; }
+  .sticky-atc-btn { font-size: 1em; padding: 0.5em 1.2em; }
+}
+@keyframes sticky-atc-fadein {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+</style>
+<script>
+(function(){
+  var bar = document.getElementById('sticky-atc-bar');
+  if (!bar) return;
+  function checkShowBar() {
+    var productForm = document.querySelector('form[action^="/cart/add"]');
+    if (!productForm) return;
+    var rect = productForm.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > window.innerHeight) {
+      bar.style.display = 'flex';
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+  window.addEventListener('scroll', checkShowBar, { passive: true });
+  window.addEventListener('resize', checkShowBar);
+  document.addEventListener('DOMContentLoaded', checkShowBar);
+})();
+</script>
