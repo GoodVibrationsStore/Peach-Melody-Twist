@@ -1,3 +1,84 @@
+/* --- Marquee Section Enhancements --- */
+.theme--pastel .cool-marquee {
+  background: var(--pastel-bg, #fffbe7);
+  color: var(--pastel-text, #22223b);
+}
+.theme--neon .cool-marquee {
+  background: var(--neon-bg, #0f0c29);
+  color: var(--neon-text, #39ff14);
+}
+.theme--emoji .cool-marquee {
+  background: var(--emoji-bg, #fffbe7);
+  color: var(--emoji-text, #22223b);
+}
+.use-global-theme .cool-marquee {
+  background: inherit !important;
+  color: inherit !important;
+}
+
+/* Add fallback values for custom properties in variant picker */
+.variant-picker__legend {
+  color: var(--variant-picker-color-text, #22223b);
+}
+.variant-picker__select {
+  background-color: var(--variant-picker-color-background, #fff);
+  border: 1px solid var(--variant-picker-color-border, #ccc);
+  color: var(--variant-picker-color-text, #22223b);
+}
+.variant-picker__select:focus {
+  border-color: var(--variant-picker-color-border-focus, #005fcc);
+}
+.variant-picker__select:disabled {
+  background-color: var(--variant-picker-color-error-bg, #fef2f2);
+  color: var(--variant-picker-color-disabled, #888);
+}
+.variant-picker--error .variant-picker__select {
+  border-color: var(--variant-picker-color-error, #dc2626);
+  background-color: var(--variant-picker-color-error-bg, #fef2f2);
+}
+.variant-picker__error {
+  background-color: var(--variant-picker-color-error-bg, #fef2f2);
+  border: 1px solid var(--variant-picker-color-error, #dc2626);
+  color: var(--variant-picker-color-error, #dc2626);
+}
+.variant-availability--available {
+  background-color: var(--variant-picker-color-success-bg, #ecfdf5);
+  color: var(--variant-picker-color-success, #059669);
+}
+.variant-availability--sold-out {
+  background-color: var(--variant-picker-color-error-bg, #fef2f2);
+  color: var(--variant-picker-color-error, #dc2626);
+}
+.neon-text {
+  text-shadow: 0 0 8px #39ff14, 0 0 16px #39ff14, 0 0 24px #39ff1488;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  border: 0;
+}
+.focusable:focus {
+  outline: 2px solid #222;
+  outline-offset: 2px;
+  z-index: 1000;
+}
+.skip-link {
+  left: 0; top: 0;
+  background: #ffd1dc;
+  color: #22223b;
+  padding: 0.5em 1em;
+  font-weight: bold;
+  text-decoration: none;
+  position: absolute;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+/* Border and blur handled inline for full customizability */
 /* --- BEGIN AUDIT FIX --- */
 
 /* Remove all Liquid, comment, and pseudo-Liquid blocks from this CSS file. 
@@ -7,6 +88,29 @@
 
 /* Variant Picker Root Variables */
 :root {
+  /* Pastel palette */
+  --pastel-pink: #ffd1dc;
+  --pastel-blue: #b5d8fa;
+  --pastel-green: #c8f7c5;
+  --pastel-yellow: #fffacc;
+  --pastel-purple: #e0bbff;
+  --pastel-orange: #ffe5b4;
+  --pastel-mint: #b6fcd5;
+  --pastel-lavender: #e3e4fa;
+
+  /* Neon palette */
+  --neon-pink: #ff4fcb;
+  --neon-green: #39ff14;
+  --neon-blue: #00f0ff;
+  --neon-yellow: #fcff4f;
+  --neon-orange: #ff9900;
+  --neon-purple: #bc13fe;
+  --neon-red: #ff3131;
+  --neon-cyan: #0ff0fc;
+
+  /* Emoji palette (for backgrounds, borders, or highlights) */
+
+  /* Default variant picker variables */
   --variant-picker-color-text: rgba(18, 18, 18, 1);
   --variant-picker-color-background: #fff;
   --variant-picker-color-border: rgba(18, 18, 18, 0.2);
@@ -15,6 +119,7 @@
   --variant-picker-color-disabled: rgba(18, 18, 18, 0.5);
   --variant-picker-color-error: #dc2626;
   --variant-picker-color-error-bg: #fef2f2;
+  --variant-picker-color-error-bg-high-contrast: #fff0f3;
   --variant-picker-color-success: #059669;
   --variant-picker-color-success-bg: #ecfdf5;
   --variant-picker-border-radius: 0.5rem;
@@ -28,11 +133,29 @@
   --variant-picker-shadow-error: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
-/* Variant Picker Container */
-.variant-picker {
-  margin: 2rem 0;
-  position: relative;
-  font-family: inherit;
+/* Pastel theme example */
+.theme--pastel {
+  --variant-picker-color-background: var(--pastel-lavender);
+  --variant-picker-color-border: var(--pastel-blue);
+  --variant-picker-color-border-focus: var(--pastel-pink);
+  --variant-picker-color-error-bg: var(--pastel-pink);
+}
+
+/* Neon theme example */
+.theme--neon {
+  --variant-picker-color-background: var(--neon-blue);
+  --variant-picker-color-border: var(--neon-pink);
+  --variant-picker-color-border-focus: var(--neon-green);
+  --variant-picker-color-error-bg: var(--neon-yellow);
+  --variant-picker-color-text: #111;
+}
+
+/* Emoji theme example: add emoji as background or border using ::before or ::after */
+.theme--emoji .variant-picker__legend::before {
+  content: "⭐ ";
+  margin-right: 0.5em;
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 
 .variant-picker__dropdowns {
@@ -349,18 +472,6 @@
   background-color: var(--variant-picker-color-error-bg);
   border-radius: var(--variant-picker-border-radius);
   color: var(--variant-picker-color-error);
-}
-
-.visually-hidden {
-  position: absolute !important;
-  overflow: hidden;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  clip: rect(0 0 0 0);
-  word-wrap: normal !important;
 }
 
 .hidden {
