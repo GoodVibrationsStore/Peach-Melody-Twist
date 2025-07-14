@@ -9,6 +9,7 @@
 {%- assign variant_picker_id = 'variant-picker-' | append: section.id | append: product.id -%}
 
 {%- if product and product.variants.size > 1 -%}
+  <a href="#main-content" class="variant-picker__skip-link visually-hidden-focusable">{{ 'accessibility.skip_to_main_content' | t | default: 'Skip to main content' }}</a>
   <variant-picker-dropdown
     class="variant-picker no-js-hidden"
     data-section="{{ section.id }}"
@@ -86,7 +87,7 @@
         <fieldset class="variant-picker__fieldset">
           <legend class="variant-picker__legend">
             {{ option.name }}
-            <span class="required-indicator" aria-label="required">*</span>
+            <span class="required-indicator" aria-label="{{ 'general.accessibility.required' | t | default: 'required' }}">*</span>
           </legend>
           <div class="variant-picker__select-wrapper">
             <select
@@ -97,6 +98,7 @@
               data-option-name="{{ option.name | escape }}"
               aria-label="{{ option.name }}"
               aria-describedby="Option-{{ option.position }}-{{ section.id }}-error"
+              aria-required="true"
               required>
               <option
                 value=""
@@ -146,5 +148,6 @@
       {% endif %}
       {% unless current_variant %}
       disabled{% endunless %}>
+    <div id="variant-picker-announcements-{{ product.id }}" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
   </variant-picker-dropdown>
 {%- endif -%}

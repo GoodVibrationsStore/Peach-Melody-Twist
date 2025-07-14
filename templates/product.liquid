@@ -1,19 +1,24 @@
-<div class="product">
-  <div class="product__media">
+<main class="product" role="main" aria-label="{{ product.title }}">
+  <section class="product__media" aria-label="Product images">
     {% if product.featured_image %}
       <img
         src="{{ product.featured_image | image_url: width: 800 }}"
         alt="{{ product.featured_image.alt | escape }}"
         width="800"
         height="800"
-        loading="lazy">
+        loading="lazy"
+        role="img"
+        aria-describedby="product-image-desc">
+      <span id="product-image-desc" class="visually-hidden">
+        {{ product.featured_image.alt | escape }}
+      </span>
     {% endif %}
-  </div>
+  </section>
 
-  <div class="product__info">
-    <h1 class="product__title">{{ product.title }}</h1>
+  <section class="product__info" aria-labelledby="product-title">
+    <h1 id="product-title" class="product__title">{{ product.title }}</h1>
 
-    <div class="product__price" data-variant-price>
+    <div class="product__price" data-variant-price aria-live="polite">
       {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
         <span class="price--on-sale">{{ product.selected_or_first_available_variant.price | money }}</span>
         <span class="price--compare">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
@@ -25,9 +30,9 @@
     {% section 'product-form' %}
 
     {% if product.description %}
-      <div class="product__description">
+      <div class="product__description" aria-label="Product description">
         {{ product.description }}
       </div>
     {% endif %}
-  </div>
-</div>
+  </section>
+</main>

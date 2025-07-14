@@ -5,15 +5,29 @@
   - All settings are editable in the Shopify customizer. 
 {%- endcomment -%}
 
-<section class="marquee-section" style="
-    background: {{ section.settings.bg_color }};
-    {% if section.settings.gradient_bg != blank %}background-image: {{ section.settings.gradient_bg }};{% endif %}
+
+<a href="#main-content" class="skip-link visually-hidden focusable">Skip marquee</a>
+<section class="marquee-section 
+  theme--{{ section.settings.theme | default: 'pastel' }}
+  {% if section.settings.use_global_theme %} use-global-theme{% endif %}"
+  style="
+    {% unless section.settings.use_global_theme %}
+      background: {{ section.settings.bg_color }};
+      {% if section.settings.gradient_bg != blank %}background-image: {{ section.settings.gradient_bg }};{% endif %}
+    {% endunless %}
     padding: {{ section.settings.padding }}px 0;
-  ">
+    border: {% if section.settings.border_width > 0 %}{{ section.settings.border_width }}px solid {{ section.settings.border_color }}{% else %}none{% endif %};
+    border-radius: {{ section.settings.border_radius }}px;
+    backdrop-filter: {% if section.settings.bg_blur %}blur(8px){% else %}none{% endif %};
+  "
+  aria-label="Site announcement section"
+  >
   <div
-    class="cool-marquee{% if section.settings.glow %} marquee-glow{% endif %}"
+    class="cool-marquee{% if section.settings.glow %} marquee-glow{% endif %}{% if section.settings.neon %} neon-text{% endif %}"
     style="
-      color: {{ section.settings.text_color }};
+      {% unless section.settings.use_global_theme %}
+        color: {{ section.settings.text_color }};
+      {% endunless %}
       font-size: {{ section.settings.font_size }}px;
       font-family: {{ section.settings.font_family | default: 'inherit' }};
       {% if section.settings.text_shadow %}text-shadow: 0 0 8px {{ section.settings.text_color }}, 0 0 16px {{ section.settings.text_color }}, 0 0 24px {{ section.settings.text_color }}88;{% endif %}
@@ -21,20 +35,97 @@
     "
     tabindex="0"
     role="marquee"
-    aria-label="Site announcement"
+    aria-label="{{ section.settings.text | escape }}"
+    aria-live="polite"
     data-direction="{{ section.settings.direction }}"
     data-speed="{{ section.settings.speed }}">
-    <span class="marquee-emoji cool-emoji{% if section.settings.emoji_glow %} emoji-glow{% endif %}">
+    <span class="marquee-emoji cool-emoji{% if section.settings.emoji_glow %} emoji-glow{% endif %}" aria-hidden="true">
       {{ section.settings.emoji | default: "🌈" }}
     </span>
-    <span>{{ section.settings.text }}</span>
+    <span class="marquee-text">{{ section.settings.text }}</span>
+    <span class="visually-hidden" id="marquee-announcement" aria-live="polite"></span>
   </div>
 </section>
+
+<script>
+// Pause marquee on focus/hover for accessibility
+document.addEventListener('DOMContentLoaded', function() {
+  var marquee = document.querySelector('.cool-marquee');
+  if (marquee) {
+    marquee.addEventListener('focus', function() {
+      marquee.style.animationPlayState = 'paused';
+    });
+    marquee.addEventListener('blur', function() {
+      marquee.style.animationPlayState = 'running';
+    });
+    marquee.addEventListener('mouseenter', function() {
+      marquee.style.animationPlayState = 'paused';
+    });
+    marquee.addEventListener('mouseleave', function() {
+      marquee.style.animationPlayState = 'running';
+    });
+    // Announce marquee text for screen readers
+    var announcement = document.getElementById('marquee-announcement');
+    if (announcement) {
+      announcement.textContent = marquee.textContent;
+    }
+  }
+});
+</script>
 
 {% schema %}
   {
     "name": "Marquee",
     "settings": [
+      {
+        "type": "select",
+        "id": "theme",
+        "label": "Theme palette",
+        "options": [
+          { "value": "pastel", "label": "Pastel" },
+          { "value": "neon", "label": "Neon" },
+          { "value": "emoji", "label": "Emoji" }
+        ],
+        "default": "pastel",
+        "info": "Choose a color/emoji palette for the marquee."
+      },
+      {
+        "type": "checkbox",
+        "id": "use_global_theme",
+        "label": "Use global theme colors",
+        "default": false,
+        "info": "If enabled, marquee will inherit the site's active theme colors."
+      },
+      {
+        "type": "color",
+        "id": "border_color",
+        "label": "Border color",
+        "default": "#ffd1dc"
+      },
+      {
+        "type": "range",
+        "id": "border_width",
+        "label": "Border width (px)",
+        "min": 0,
+        "max": 12,
+        "step": 1,
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "border_radius",
+        "label": "Border radius (px)",
+        "min": 0,
+        "max": 48,
+        "step": 2,
+        "default": 12
+      },
+      {
+        "type": "checkbox",
+        "id": "bg_blur",
+        "label": "Enable background blur",
+        "default": false
+      },
       {
         "type": "text",
         "id": "text",

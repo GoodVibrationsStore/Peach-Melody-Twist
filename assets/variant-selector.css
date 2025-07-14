@@ -1,9 +1,69 @@
+/* Visually hidden but focusable skip link for accessibility */
+.variant-picker__skip-link.visually-hidden-focusable {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 1000;
+  background: #fff;
+  color: #111;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+  transition: left 0.2s;
+}
+.variant-picker__skip-link.visually-hidden-focusable:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  outline: 2px solid var(--variant-picker-focus-color);
+  outline-offset: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: #fff;
+  color: #111;
+}
+
+/* Visually hidden live region for announcements */
+.variant-picker__announcements.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 /* 
  * Modern Variant Selector Styles
  * Responsive, accessible, and customizable variant picker styles
  */
 
 :root {
+  /* Pastel palette */
+  --pastel-pink: #ffd1dc;
+  --pastel-blue: #b5d8fa;
+  --pastel-green: #c8f7c5;
+  --pastel-yellow: #fffacc;
+  --pastel-purple: #e0bbff;
+  --pastel-orange: #ffe5b4;
+  --pastel-mint: #b6fcd5;
+  --pastel-lavender: #e3e4fa;
+
+  /* Neon palette */
+  --neon-pink: #ff4fcb;
+  --neon-green: #39ff14;
+  --neon-blue: #00f0ff;
+  --neon-yellow: #fcff4f;
+  --neon-orange: #ff9900;
+  --neon-purple: #bc13fe;
+  --neon-red: #ff3131;
+  --neon-cyan: #0ff0fc;
+
+  /* Example usage: var(--pastel-pink), var(--neon-green) */
   /* Color scheme */
   --variant-picker-border-color: #e2e8f0;
   --variant-picker-border-radius: 0.5rem;
@@ -14,8 +74,43 @@
   --variant-picker-bg-color: #ffffff;
   --variant-picker-hover-border: #d1d5db;
   --variant-picker-color-error: #dc2626;
+  --variant-picker-high-contrast: #000; /* Added for high contrast mode */
+}
 
-  /* Typography */
+/* Pastel theme example */
+.variant-picker--pastel {
+  --variant-picker-bg-color: var(--pastel-blue);
+  --variant-picker-border-color: var(--pastel-purple);
+  --variant-picker-focus-color: var(--pastel-pink);
+  --variant-picker-hover-border: var(--pastel-mint);
+}
+
+/* Neon theme example */
+.variant-picker--neon {
+  --variant-picker-bg-color: var(--neon-blue);
+  --variant-picker-border-color: var(--neon-pink);
+  --variant-picker-focus-color: var(--neon-green);
+  --variant-picker-hover-border: var(--neon-yellow);
+  --variant-picker-text-color: #111;
+}
+
+/* Emoji theme example: add emoji as background or border using ::before or ::after */
+.variant-picker--emoji .product-variant-picker__select::before {
+  content: var(--emoji-star) ' ';
+  position: absolute;
+  left: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  pointer-events: none;
+}
+
+.variant-picker--emoji .product-variant-picker__select {
+  padding-left: 2.2em;
+}
+
+/* Typography */
+:root {
   --variant-picker-font-size: 1rem;
   --variant-picker-font-weight: 400;
   --variant-picker-line-height: 1.5;
@@ -123,13 +218,14 @@
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  :root {
+  html {
     --variant-picker-border-color: #4b5563;
     --variant-picker-disabled-bg: #374151;
-    --variant-picker-disabled-text: #9ca3af;
+    --variant-picker-disabled-text: #e5e7eb;
     --variant-picker-text-color: #f9fafb;
     --variant-picker-bg-color: #1f2937;
     --variant-picker-hover-border: #6b7280;
+    --variant-picker-focus-color: #60a5fa; /* Ensure focus color is set in dark mode */
   }
 }
 
@@ -256,7 +352,7 @@
 
 /* Touch and hover adjustments */
 @media (hover: none) and (pointer: coarse) {
-  .variant-picker__select {
+  .product-variant-picker__select {
     user-select: none;
     -webkit-user-select: none;
   }
